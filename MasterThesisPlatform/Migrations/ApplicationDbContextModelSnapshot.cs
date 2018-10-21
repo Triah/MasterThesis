@@ -26,6 +26,8 @@ namespace MasterThesisPlatform.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<int>("Age");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -35,6 +37,8 @@ namespace MasterThesisPlatform.Migrations
                     b.Property<bool>("EmailConfirmed");
 
                     b.Property<string>("FirstName");
+
+                    b.Property<int>("Grade");
 
                     b.Property<string>("LastName");
 
@@ -53,6 +57,10 @@ namespace MasterThesisPlatform.Migrations
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<string>("Role");
+
+                    b.Property<string>("School");
 
                     b.Property<string>("SecurityStamp");
 

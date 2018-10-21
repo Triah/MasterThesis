@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
 namespace MasterThesisPlatform.Areas.Identity.Pages.Account
@@ -41,9 +42,22 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+
+            [Required]
+            [Display(Name = "Role")]
+            public string Role { get; set; }
+            public SelectList RoleList { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -62,12 +76,30 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
+       /* public string Usernameify(string[] parts)
+        {
+            string usernameResult = "";
+            for(int i = 0; i < parts.Length; i++)
+            {
+                parts[i] = parts[i].Replace(" ", "");
+            }
+            foreach (string s in parts)
+            {
+                usernameResult += s;
+            }
+            Random rng = new Random();
+            usernameResult += rng.Next().ToString();
+            return usernameResult;
+        }
+        */
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                string[] usernameArray = new string[] { Input.FirstName, Input.LastName };
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName,
+                    LastName = Input.LastName, Role = Input.Role};
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

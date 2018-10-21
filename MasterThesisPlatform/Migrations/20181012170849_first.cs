@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MasterThesisPlatform.Migrations
 {
-    public partial class second : Migration
+    public partial class first : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,11 @@ namespace MasterThesisPlatform.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true)
+                    LastName = table.Column<string>(nullable: true),
+                    Role = table.Column<string>(nullable: true),
+                    Age = table.Column<int>(nullable: false),
+                    Grade = table.Column<int>(nullable: false),
+                    School = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

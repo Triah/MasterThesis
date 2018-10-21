@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MasterThesisPlatform.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181009124450_second")]
-    partial class second
+    [Migration("20181012170849_first")]
+    partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,6 +28,8 @@ namespace MasterThesisPlatform.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<int>("Age");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -37,6 +39,8 @@ namespace MasterThesisPlatform.Migrations
                     b.Property<bool>("EmailConfirmed");
 
                     b.Property<string>("FirstName");
+
+                    b.Property<int>("Grade");
 
                     b.Property<string>("LastName");
 
@@ -55,6 +59,10 @@ namespace MasterThesisPlatform.Migrations
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<string>("Role");
+
+                    b.Property<string>("School");
 
                     b.Property<string>("SecurityStamp");
 
