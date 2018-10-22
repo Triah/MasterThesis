@@ -5,18 +5,45 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MasterThesisPlatform.Models;
+using Microsoft.AspNetCore.Identity;
+using MasterThesisPlatform.Data;
 
 namespace MasterThesisPlatform.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+
+        //private readonly UserManager<ApplicationUser> userManager;
+
+        private UserManager<ApplicationUser> userManager;
+
+        public HomeController(UserManager<ApplicationUser> userManager)
         {
-            return View();
+            this.userManager = userManager;
         }
 
-        public IActionResult Help()
+        public IActionResult Index()
         {
+            if(this.userManager.GetUserAsync(HttpContext.User) != null)
+            {
+                var user = this.userManager.GetUserAsync(HttpContext.User);
+                if(user.Result != null)
+                {
+                    if (user.Result.Role.Equals("Teacher"))
+                    {
+                        return View(CustomRoutes.TeacherIndex);
+                    }
+                    if (user.Result.Role.Equals("Developer"))
+                    {
+                        return View(CustomRoutes.DeveloperIndex);
+                    }
+                    if (user.Result.Role.Equals("Student"))
+                    {
+                        return View(CustomRoutes.StudentIndex);
+                    }
+                }
+                
+            }
             return View();
         }
 
