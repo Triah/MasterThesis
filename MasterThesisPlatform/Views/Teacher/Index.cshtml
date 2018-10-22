@@ -6,11 +6,21 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-<h1>This is the teacher page</h1>
+    var user = await UserManager.GetUserAsync(User);
+    if (user.Role.Equals("Teacher"))
+    {
+        <h1>This is the teacher page</h1>
 
-}
+    }
+    else
+    {
+        <h1>You shouldn't be here</h1>
 
-else
+    }
+
+
+} else
 {
-    <h1>You shouldn't be here</h1>
+    <h1>No login detected</h1>
+
 }

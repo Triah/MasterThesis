@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using MasterThesisPlatform.Data;
+using MasterThesisPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -38,6 +39,18 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
+
+        public List<RolesList> getRoles()
+        {
+            List<RolesList> roleList = new List<RolesList>
+            {
+                new RolesList{Id = 1, Label = "Student" },
+                new RolesList{Id = 2, Label = "Teacher" },
+                new RolesList{Id = 3, Label = "Developer"}
+            };
+            return roleList;
+        }
+        
 
         public class InputModel
         {
@@ -76,28 +89,11 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-       /* public string Usernameify(string[] parts)
-        {
-            string usernameResult = "";
-            for(int i = 0; i < parts.Length; i++)
-            {
-                parts[i] = parts[i].Replace(" ", "");
-            }
-            foreach (string s in parts)
-            {
-                usernameResult += s;
-            }
-            Random rng = new Random();
-            usernameResult += rng.Next().ToString();
-            return usernameResult;
-        }
-        */
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                string[] usernameArray = new string[] { Input.FirstName, Input.LastName };
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName,
                     LastName = Input.LastName, Role = Input.Role};
                 var result = await _userManager.CreateAsync(user, Input.Password);
