@@ -1,2 +1,27 @@
-﻿
-<h1>This is the developer page</h1>
+﻿@using Microsoft.AspNetCore.Identity
+@using MasterThesisPlatform.Data;
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+    if (user.Role.Equals("Developer"))
+    {
+        <h1>This is the developer page</h1>
+
+    }
+    else
+    {
+        <h1>You shouldn't be here</h1>
+
+    }
+
+
+}
+else
+{
+    <h1>No login detected</h1>
+
+}
