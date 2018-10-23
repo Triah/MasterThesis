@@ -16,13 +16,13 @@
                 @if (Model.IsEmailConfirmed)
                 {
                     <div class="input-group">
-                        <input asp-for="Input.Email" class="form-control" disabled/>
+                        <input asp-for="Input.Email" class="form-control" />
                         <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
                     </div>
                 }
                 else
                 {
-                    <input asp-for="Input.Email" class="form-control" disabled/>
+                    <input asp-for="Input.Email" class="form-control" />
                     <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
                 }
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
@@ -31,6 +31,29 @@
                 <label asp-for="Input.PhoneNumber"></label>
                 <input asp-for="Input.PhoneNumber" class="form-control" />
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Age"></label>
+                <select asp-for="Input.Age" class="form-control">
+                    @for (int i = 0; i < 100; i++)
+                    {
+                        <option>@i</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Grade"></label>
+                <select asp-for="Input.Grade" class="form-control">
+                    @for (int i = 0; i < 11; i++)
+                    {
+                        <option>@i</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.School"></label>
+                <input asp-for="Input.School" class="form-control" />
+                <span asp-validation-for="Input.School" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-default">Save</button>
         </form>

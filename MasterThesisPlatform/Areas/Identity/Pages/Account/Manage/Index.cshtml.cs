@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -47,6 +49,12 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            public string Age { get; set; }
+
+            public string Grade { get; set; }
+
+            public string School { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -60,13 +68,19 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var age = user.Age.ToString();
+            var grade = user.Grade.ToString();
+            var school = user.School;
 
             Username = userName;
 
             Input = new InputModel
             {
                 Email = email,
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Age = age,
+                Grade = grade,
+                School = school
             };
 
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
@@ -107,6 +121,53 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account.Manage
                     var userId = await _userManager.GetUserIdAsync(user);
                     throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
                 }
+            }
+
+            var age = user.Age;
+            try
+            {
+                if(Int32.Parse(Input.Age) != age)
+                {
+                    var u = _userManager.GetUserAsync(User).Result;
+                    u.Age = Int32.Parse(Input.Age);
+                    var result = await _userManager.UpdateAsync(u);
+                
+                }
+            } catch (Exception e)
+            {
+                e.ToString();
+            }
+
+            var grade = user.Grade;
+            try
+            {
+                if (Int32.Parse(Input.Grade) != grade)
+                {
+                    var u = _userManager.GetUserAsync(User).Result;
+                    u.Grade = Int32.Parse(Input.Grade);
+                    var result = await _userManager.UpdateAsync(u);
+
+                }
+            }
+            catch (Exception e)
+            {
+                e.ToString();
+            }
+
+            var School = user.School;
+            try
+            {
+                if (School != Input.School)
+                {
+                    var u = _userManager.GetUserAsync(User).Result;
+                    u.School = Input.School;
+                    var result = await _userManager.UpdateAsync(u);
+
+                }
+            }
+            catch (Exception e)
+            {
+                e.ToString();
             }
 
             await _signInManager.RefreshSignInAsync(user);
