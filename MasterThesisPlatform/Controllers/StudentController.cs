@@ -12,5 +12,10 @@ namespace MasterThesisPlatform.Controllers
         {
             return View();
         }
+
+        public IActionResult Game()
+        {
+            return View();
+        }
     }
 }
