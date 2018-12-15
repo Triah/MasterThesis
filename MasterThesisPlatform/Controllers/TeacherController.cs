@@ -10,6 +10,7 @@ namespace MasterThesisPlatform.Controllers
     {
         public IActionResult Index()
         {
+            
             return View();
         }
 

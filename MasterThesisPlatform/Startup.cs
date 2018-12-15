@@ -12,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using MasterThesisPlatform.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MasterThesisPlatform.Hubs;
+using System.Net.WebSockets;
+using System.Threading;
 
 namespace MasterThesisPlatform
 {
@@ -42,13 +43,14 @@ namespace MasterThesisPlatform
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddNodeServices();
 
-            services.AddCors(options => options.AddPolicy("CorsPolicy",
+            services.AddCors(options => options.AddPolicy("AllowNodeServer",
             builder =>
             {
-                builder.AllowAnyMethod().AllowAnyHeader()
-                       .WithOrigins("http://localhost:55830")
-                       .AllowCredentials();
+                builder.AllowAnyOrigin();
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
             }));
 
             services.AddSignalR();
@@ -83,10 +85,6 @@ namespace MasterThesisPlatform
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<GameHub>("/gameHub");
-            });
 
         }
     }

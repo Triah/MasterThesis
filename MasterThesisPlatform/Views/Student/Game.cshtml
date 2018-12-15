@@ -1,33 +1,31 @@
-﻿@page
-<div class="container">
-    <div class="row">&nbsp;</div>
-    <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            User..........<input type="text" id="userInput" />
-            <br />
-            Message...<input type="text" id="messageInput" />
-            <input type="button" id="sendButton" value="Send Message" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <hr />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            <ul id="messagesList"></ul>
-        </div>
-    </div>
-</div>
+﻿@using Microsoft.AspNetCore.Identity
+@using MasterThesisPlatform.Data;
 
-<!--Canvas Game stuff-->
-<canvas id="myCanvas" width="480" height="320" style="border: solid 1px;"></canvas>
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+    <h1>@user.Email</h1>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-<!--Game end-->
+    <script type="text/javascript">
 
-<script src="~/lib/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/game.js"></script>
+        $.ajax({
+            method: "POST",
+            url: "http://localhost:5000",
+            crossDomain: true,
+            data: { "email": "@user.Email" },
+            success: function (data, textStatus) {
+                console.log(data);
+                window.location.href = "http://localhost:5000";
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+
+    </script>
+}
+
