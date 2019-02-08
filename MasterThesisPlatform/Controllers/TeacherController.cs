@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MasterThesisPlatform.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,23 @@ namespace MasterThesisPlatform.Controllers
             return View();
         }
 
+        [HttpPost("AddGameAction")]
+        public IActionResult AddGameAction()
+        {
+            Game game = new Game();
+            game.GameId = GenerateGameID();
+            game.Name = Guid.NewGuid().ToString();
+            game.SaveDetails();
+            return View("Index");
+        }
+
         public IActionResult CreateGame()
         {
             return View();
+        }
+        public int GenerateGameID()
+        {
+            return Guid.NewGuid().GetHashCode();
         }
     }
 }

@@ -16,7 +16,7 @@
             method: "POST",
             url: "http://localhost:5000",
             crossDomain: true,
-            data: { "email": "@user.Email" },
+            data: { "email": "@user.Email", "gameName": "testGame" },
             success: function (data, textStatus) {
                 console.log(data);
                 window.location.href = "http://localhost:5000";

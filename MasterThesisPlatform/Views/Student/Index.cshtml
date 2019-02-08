@@ -1,5 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using MasterThesisPlatform.Data;
+@model IEnumerable<MasterThesisPlatform.Models.Game>
+@{
+    ViewBag.Title = "Index";
+}
+
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -9,13 +14,26 @@
     var user = await UserManager.GetUserAsync(User);
     if (user.Role.Equals("Student"))
     {
+        
         <h1>This is the student page</h1>
         <div class="row">
                 <ul class="nav nav-pills nav-stacked">
-                    <li><a asp-area="" asp-controller="Student" asp-action="Game">Start Game</a></li>
+                    @foreach(var game in Model)
+                    {
+                        <li>@game.Name</li>
+                    }
+
+                        <!--<li><a asp-area="" asp-controller="Student" asp-action="Game" asp-route=""></a></li>-->
                 </ul>
         </div>
+        
+        
+
     }
+
+
+
+
     else
     {
         <h1>You shouldn't be here</h1>
