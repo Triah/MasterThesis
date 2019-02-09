@@ -20,10 +20,8 @@
                 <ul class="nav nav-pills nav-stacked">
                     @foreach(var game in Model)
                     {
-                        <li>@game.Name</li>
+                            <li><a href="@game.GameId">Start @game.Name</a></li>
                     }
-
-                        <!--<li><a asp-area="" asp-controller="Student" asp-action="Game" asp-route=""></a></li>-->
                 </ul>
         </div>
         

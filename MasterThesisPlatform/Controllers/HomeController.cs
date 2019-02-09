@@ -31,15 +31,15 @@ namespace MasterThesisPlatform.Controllers
                 {
                     if (user.Result.Role.Equals("Teacher"))
                     {
-                        return View(CustomRoutes.TeacherIndex);
+                        return RedirectToAction("Index", "Teacher");
                     }
                     if (user.Result.Role.Equals("Developer"))
                     {
-                        return View(CustomRoutes.DeveloperIndex);
+                        return RedirectToAction("Index", "Developer");
                     }
                     if (user.Result.Role.Equals("Student"))
                     {
-                        return View(CustomRoutes.StudentIndex);
+                        return RedirectToAction("Index", "Student");
                     }
                 }
                 

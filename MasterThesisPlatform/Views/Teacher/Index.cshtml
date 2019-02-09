@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using MasterThesisPlatform.Data;
+@model IEnumerable<MasterThesisPlatform.Models.MongoDBGame>
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -10,8 +11,12 @@
     if (user.Role.Equals("Teacher"))
     {
 
+        <p>
+            <a asp-action="CreateMongoDbGameEntry">Create New Game</a>
+        </p>
+
         <div class="current-games">
-            
+
         </div>
 
         <div class="row">
@@ -22,6 +27,51 @@
                 </ul>
             </div>
         </div>
+
+        <table class="table table-bordered" style="width:600px">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.GameId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Author)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Components)
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GameId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Author)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Components)
+                        </td>
+                        <td>
+                            @Html.ActionLink("EditMongoDbGameEntry", "EditMongoDbGameEntry", new { id = item.GameId }) |
+                            @Html.ActionLink("DetailsMongoDbGameEntry", "DetailsMongoDbGameEntry", new { id = item.GameId}) |
+                            @Html.ActionLink("DeleteMongoDbGameEntry", "DeleteMongoDbGameEntry", new { id = item.GameId })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
     }
     else
     {

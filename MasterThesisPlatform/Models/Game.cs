@@ -10,11 +10,13 @@ namespace MasterThesisPlatform.Models
     {
         public int GameId { get; set; }
         public string Name { get; set; }
+        public string Author { get; set; }
+        public string Components { get; set; }
 
         public int SaveDetails()
         {
             SqlConnection connection = new SqlConnection("Server=(localdb)\\mssqllocaldb;Database=MasterThesisDb;Trusted_Connection=True;MultipleActiveResultSets=true");
-            string query = "INSERT INTO Game(GameId, Name) values ('" + GameId + "','" + Name + "')";
+            string query = "INSERT INTO Game(GameId, Name, Author, Components) values ('" + GameId + "','" + Name + "','" + Author + "','" + Components + "')";
             SqlCommand cmd = new SqlCommand(query, connection);
             connection.Open();
             int i = cmd.ExecuteNonQuery();

@@ -1,0 +1,39 @@
+﻿@model MasterThesisPlatform.Models.MongoDBGame
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div>
+    <h4>Game Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.GameId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GameId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Author)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Author)
+        </dd>
+        <dt>
+            @Html.DisplayFor(model => model.Components)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Components)
+        </dd>
+    </dl>
+</div>
+<div>
+
+    <a asp-action="Index">Back to List</a>
+</div>  

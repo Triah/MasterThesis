@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace MasterThesisPlatform.Controllers
 {
+    [Route("Student")]
     public class StudentController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,7 +20,6 @@ namespace MasterThesisPlatform.Controllers
             _context = context;
         }
 
-        [Route("")]
         [Route("Index")]
         public IActionResult Index()
         {
@@ -38,11 +38,19 @@ namespace MasterThesisPlatform.Controllers
         }
 
 
-        [Route("{gameName}")]
-        [Route("(Game/{gameName}")]
-        public IActionResult Game()
+        [Route("{gameId}")]
+        public IActionResult Game(int gameId)
         {
-            return View();
+            foreach(Game g in _context.Games)
+            {
+                if(g.GameId == gameId)
+                {
+                    ViewData["GameId"] = g.GameId;
+                    ViewData["Name"] = g.Name;
+                    return View();
+                }
+            }
+            return RedirectToAction("Index");
         }
         
     }
