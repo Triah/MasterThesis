@@ -83,6 +83,13 @@ namespace MasterThesisPlatform.Controllers
             {
                 mongoDatabase = GetMongoDatabase();
                 mongoDatabase.GetCollection<MongoDBGame>("Games").InsertOne(game);
+
+                Game g = new Game();
+                g.GameId = game.GameId;
+                g.Name = game.Name;
+                g.Author = game.Author;
+                g.Components = game.Components;
+                g.SaveDetails();
             }
             catch (Exception e)
             {
