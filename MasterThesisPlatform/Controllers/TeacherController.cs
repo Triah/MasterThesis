@@ -45,29 +45,6 @@ namespace MasterThesisPlatform.Controllers
             return View();
         }
 
-        [HttpPost("AddGameAction")]
-        public IActionResult AddGameAction()
-        {
-            Game game = new Game();
-            game.GameId = GenerateGameID();
-            game.Author = _userManager.GetUserAsync(HttpContext.User).Result.Id.ToString();
-            game.Components = "TO BE IMPLEMENTED";
-            game.Name = Guid.NewGuid().ToString();
-            game.SaveDetails();
-            return View("Index");
-        }
-
-        [Route("CreateGame")]
-        public IActionResult CreateGame()
-        {
-            return View();
-        }
-
-        public int GenerateGameID()
-        {
-            return Guid.NewGuid().GetHashCode();
-        }
-
         [Route("CreateMongoDbGameEntry")]
         [HttpGet]
         public IActionResult CreateMongoDbGameEntry()
@@ -89,6 +66,7 @@ namespace MasterThesisPlatform.Controllers
                 g.Name = game.Name;
                 g.Author = game.Author;
                 g.Components = game.Components;
+                g.Capacity = game.Capacity;
                 g.SaveDetails();
             }
             catch (Exception e)
@@ -128,7 +106,7 @@ namespace MasterThesisPlatform.Controllers
             }
             //Get the database connection  
             mongoDatabase = GetMongoDatabase();
-            //fetch the details from CustomerDB and pass into view  
+            //fetch the details from Games and pass into view  
             MongoDBGame game = mongoDatabase.GetCollection<MongoDBGame>("Games").Find<MongoDBGame>(k => k.GameId == id).FirstOrDefault();
             if (game == null)
             {
@@ -145,7 +123,7 @@ namespace MasterThesisPlatform.Controllers
             {
                 //Get the database connection  
                 mongoDatabase = GetMongoDatabase();
-                //Delete the customer record  
+                //Delete the game record  
                 var result = mongoDatabase.GetCollection<MongoDBGame>("Games").DeleteOne<MongoDBGame>(k => k.GameId == game.GameId);
                 if (result.IsAcknowledged == false)
                 {
@@ -169,7 +147,7 @@ namespace MasterThesisPlatform.Controllers
             }
             //Get the database connection  
             mongoDatabase = GetMongoDatabase();
-            //fetch the details from CustomerDB based on id and pass into view  
+            //fetch the details from Games based on id and pass into view  
             var game = mongoDatabase.GetCollection<MongoDBGame>("Games").Find<MongoDBGame>(k => k.GameId == id).FirstOrDefault();
             if (game == null)
             {
@@ -193,6 +171,7 @@ namespace MasterThesisPlatform.Controllers
                 updatestatement = updatestatement.Set("Name", game.Name);
                 updatestatement = updatestatement.Set("Author", game.Author);
                 updatestatement = updatestatement.Set("Components", game.Components);
+                updatestatement = updatestatement.Set("Capacity", game.Capacity);
                 //fetch the details from CustomerDB based on id and pass into view  
                 var result = mongoDatabase.GetCollection<MongoDBGame>("Games").UpdateOne(filter, updatestatement);
                 if (result.IsAcknowledged == false)

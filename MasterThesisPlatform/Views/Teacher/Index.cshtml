@@ -23,7 +23,6 @@
             <div class="col-md-2" style="position:absolute; left:0;">
                 <ul class="nav nav-pills nav-stacked">
                     <li><a asp-area="" asp-controller="Teacher" asp-action="StudentsPage">View Students</a></li>
-                    <li><a asp-area="" asp-controller="Teacher" asp-action="CreateGame">Create new Game</a></li>
                 </ul>
             </div>
         </div>
@@ -43,31 +42,37 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Components)
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Capacity)
+                    </th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.GameId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Author)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Components)
-                        </td>
-                        <td>
-                            @Html.ActionLink("EditMongoDbGameEntry", "EditMongoDbGameEntry", new { id = item.GameId }) |
-                            @Html.ActionLink("DetailsMongoDbGameEntry", "DetailsMongoDbGameEntry", new { id = item.GameId}) |
-                            @Html.ActionLink("DeleteMongoDbGameEntry", "DeleteMongoDbGameEntry", new { id = item.GameId })
-                        </td>
-                    </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GameId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Author)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Components)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Capacity)
+                    </td>
+                    <td>
+                        @Html.ActionLink("EditMongoDbGameEntry", "EditMongoDbGameEntry", new { id = item.GameId }) |
+                        @Html.ActionLink("DetailsMongoDbGameEntry", "DetailsMongoDbGameEntry", new { id = item.GameId }) |
+                        @Html.ActionLink("DeleteMongoDbGameEntry", "DeleteMongoDbGameEntry", new { id = item.GameId })
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>

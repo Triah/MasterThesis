@@ -19,5 +19,7 @@ namespace MasterThesisPlatform.Models
         public string Author { get; set; }
         [BsonElement]
         public string Components { get; set; }
+        [BsonElement]
+        public int Capacity { get; set; }
     }
 }
