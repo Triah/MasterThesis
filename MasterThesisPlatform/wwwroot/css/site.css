@@ -35,3 +35,28 @@ body {
         display: none;
     }
 }
+
+.palette-wrapper{
+    height:100px;
+}
+
+.palette-categories{
+    float:left;
+    width:20%;
+    height:100%;
+    border:solid 1px;
+    overflow-y: auto;
+}
+
+.palette-elements{
+    float:right;
+    width:80%;
+    height:100%;
+    border:solid 1px;
+}
+
+.building-canvas canvas {
+    width: 800px;
+    height: 600px;
+    border: 2px solid black;
+}
