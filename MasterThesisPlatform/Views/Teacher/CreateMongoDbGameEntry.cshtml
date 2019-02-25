@@ -3,33 +3,22 @@
     ViewData["Title"] = "Create";
 }
 <h2>Create Game Details</h2>
-<hr/>
+@{ 
+    var list = ViewData["ListOfGames"] as List<MasterThesisPlatform.Models.MongoDBGameRooms>;
+}
+
+<hr />
 <div class="palette-wrapper">
     <div class="palette-categories">
-        <div class="palette-category-item">
-            <a onclick="markitem()">item</a>
+        @foreach(var item in list)
+        {
+            //This is an example of how to use mongoDB to dynamically create the list and operations
+            //need methods for the actual code and a function that interprets the code or creates a file
+        <div class="palette-category-item" onclick="alert('@item.game')">
+            <p>@item.roomname</p>
         </div>
-        <div class="palette-category-item">
-            <a onclick="markitem()">item</a>
-        </div>
-        <div class="palette-category-item">
-            <a onclick="markitem()">item</a>
-        </div>
-        <div class="palette-category-item">
-            <a onclick="markitem()">item</a>
-        </div>
-        <div class="palette-category-item">
-            <a onclick="markitem()">item</a>
-        </div>
-        <div class="palette-category-item">
-            <a onclick="markitem()">item</a>
-        </div>
-        <div class="palette-category-item">
-            <a onclick="markitem()">item</a>
-        </div>
-        <div class="palette-category-item">
-            <a onclick="markitem()">item</a>
-        </div>
+        }
+        
     </div>
     <div class="palette-elements">
 

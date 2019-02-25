@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,6 +50,13 @@ namespace MasterThesisPlatform.Controllers
         [HttpGet]
         public IActionResult CreateMongoDbGameEntry()
         {
+            List<MongoDBGameRooms> array = new List<MongoDBGameRooms>();
+            mongoDatabase = GetMongoDatabase();
+            foreach(MongoDBGameRooms room in mongoDatabase.GetCollection<MongoDBGameRooms>("GameRooms").Find(FilterDefinition<MongoDBGameRooms>.Empty).ToList())
+            {
+                array.Add(room);
+            }
+            ViewData["ListOfGames"] = array;
             return View();
         }
 

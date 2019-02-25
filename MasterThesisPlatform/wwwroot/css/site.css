@@ -55,6 +55,17 @@ body {
     border:solid 1px;
 }
 
+.palette-category-item{
+    border:solid 1px;
+}
+
+.palette-category-item p {
+    text-align:center;
+    transform: translate(2%, 25%);
+}
+
+
+
 .building-canvas canvas {
     width: 800px;
     height: 600px;
