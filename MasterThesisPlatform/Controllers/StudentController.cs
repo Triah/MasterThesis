@@ -27,7 +27,7 @@ namespace MasterThesisPlatform.Controllers
             
             foreach (var g in _context.Games)
             {
-
+                
                 games.Add(g);
             }
             

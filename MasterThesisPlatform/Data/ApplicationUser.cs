@@ -14,5 +14,7 @@ namespace MasterThesisPlatform.Data
         public int Age { get; set; }
         public int Grade { get; set; }
         public string School { get; set; }
+        public string Teacher { get; set; }
+
     }
 }

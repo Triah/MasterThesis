@@ -55,6 +55,8 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account.Manage
             public string Grade { get; set; }
 
             public string School { get; set; }
+
+            public string Teacher { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -71,6 +73,7 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account.Manage
             var age = user.Age.ToString();
             var grade = user.Grade.ToString();
             var school = user.School;
+            var teacher = user.Teacher;
 
             Username = userName;
 
@@ -80,7 +83,8 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account.Manage
                 PhoneNumber = phoneNumber,
                 Age = age,
                 Grade = grade,
-                School = school
+                School = school,
+                Teacher = teacher
             };
 
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
@@ -153,7 +157,19 @@ namespace MasterThesisPlatform.Areas.Identity.Pages.Account.Manage
             {
                 e.ToString();
             }
-
+            var Teacher = user.Teacher;
+            try
+            {
+                if(Teacher != Input.Teacher)
+                {
+                    var u = _userManager.GetUserAsync(User).Result;
+                    u.Teacher = Input.Teacher;
+                    var result = await _userManager.UpdateAsync(u);
+                }
+            } catch(Exception e)
+            {
+                e.ToString();
+            }
             var School = user.School;
             try
             {

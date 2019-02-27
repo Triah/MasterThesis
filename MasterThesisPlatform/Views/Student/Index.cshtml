@@ -20,7 +20,11 @@
                 <ul class="nav nav-pills nav-stacked">
                     @foreach(var game in Model)
                     {
+                        if (game.Author.Equals(user.Teacher))
+                        {
                             <li><a href="@game.GameId">Start @game.Name</a></li>
+                        }
+                            
                     }
                 </ul>
         </div>
