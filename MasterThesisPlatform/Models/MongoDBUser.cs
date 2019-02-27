@@ -51,5 +51,7 @@ namespace MasterThesisPlatform.Models
         public int Grade { get; set; }
         [BsonElement]
         public string School { get; set; }
+        [BsonElement]
+        public string Teacher { get; set; }
     }
 }
