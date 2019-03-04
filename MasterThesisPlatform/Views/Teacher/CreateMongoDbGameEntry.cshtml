@@ -5,13 +5,10 @@
 <h2>Create Game Details</h2>
 @{ 
     var list = ViewData["ListOfGames"] as List<MasterThesisPlatform.Models.MongoDBGameRooms>;
-    var fileContents = ViewData["ContentsOfFile"] as string[];
+    var fileContents = ViewData["ContentsOfFile"] as string;
 }
 
-@foreach(var file in fileContents)
-{
-    <p>@file</p>
-}
+<p>@fileContents</p>
 
 
 <hr />

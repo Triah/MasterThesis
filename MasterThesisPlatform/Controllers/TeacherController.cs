@@ -58,7 +58,7 @@ namespace MasterThesisPlatform.Controllers
             {
                 array.Add(room);
             }
-            ViewData["ContentsOfFile"] = fileContents.StringifyFile();
+            ViewData["ContentsOfFile"] = fileContents.GetSuperClass("collisionShape.js");
             ViewData["ListOfGames"] = array;
             return View();
         }
