@@ -8,10 +8,33 @@ namespace MasterThesisPlatform.Util
 {
     public class ComponentFileUtility
     {
-        public ComponentFileUtility()
+        string path { get; set; }
+        string fileName { get; set; }
+        public ComponentFileUtility(string path, string fileName)
         {
-            //TODO
+            this.path = path;
+            this.fileName = fileName;
         }
+
+        public void setNewPath(string newPath)
+        {
+            if (path != null)
+            {
+                path = newPath;
+            }
+        }
+
+
+        public string[] GetFiles()
+        {
+            if (path != null)
+            {
+                string[] array = Directory.GetFiles(path + "\\");
+                return array;
+            }
+            return null;
+        }
+
 
 
         public void addFileObjectToMongoDB(string stringifiedFile)
@@ -24,9 +47,14 @@ namespace MasterThesisPlatform.Util
 
         //I need a method for sending the creation request to node, this will most likely be in the developer part
 
-        public string StringifyFile(string fileName) {
-            //TODO
-            return null;
+        public string[] StringifyFile()
+        {
+            string[] fileContents = new string[GetFiles().Length];
+            for (int i = 0; i < this.GetFiles().Length; i++)
+            {
+                fileContents[i] = File.ReadAllText(GetFiles()[i]);
+            }
+            return fileContents;
         }
     }
 }

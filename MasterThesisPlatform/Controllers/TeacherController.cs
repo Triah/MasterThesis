@@ -1,5 +1,6 @@
 ﻿using MasterThesisPlatform.Data;
 using MasterThesisPlatform.Models;
+using MasterThesisPlatform.Util;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -50,12 +51,14 @@ namespace MasterThesisPlatform.Controllers
         [HttpGet]
         public IActionResult CreateMongoDbGameEntry()
         {
+            ComponentFileUtility fileContents = new ComponentFileUtility(@"C:\Users\Nicolai\Desktop\GameClient\static\modules\abstract", "shape.js");
             List<MongoDBGameRooms> array = new List<MongoDBGameRooms>();
             mongoDatabase = GetMongoDatabase();
             foreach(MongoDBGameRooms room in mongoDatabase.GetCollection<MongoDBGameRooms>("GameRooms").Find(FilterDefinition<MongoDBGameRooms>.Empty).ToList())
             {
                 array.Add(room);
             }
+            ViewData["ContentsOfFile"] = fileContents.StringifyFile();
             ViewData["ListOfGames"] = array;
             return View();
         }

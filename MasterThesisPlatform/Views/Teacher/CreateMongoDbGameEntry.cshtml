@@ -5,12 +5,19 @@
 <h2>Create Game Details</h2>
 @{ 
     var list = ViewData["ListOfGames"] as List<MasterThesisPlatform.Models.MongoDBGameRooms>;
+    var fileContents = ViewData["ContentsOfFile"] as string[];
 }
+
+@foreach(var file in fileContents)
+{
+    <p>@file</p>
+}
+
 
 <hr />
 <div class="palette-wrapper">
     <div class="palette-categories">
-        @foreach(var item in list)
+        @foreach (var item in list)
         {
             //This is an example of how to use mongoDB to dynamically create the list and operations
             //need methods for the actual code and a function that interprets the code or creates a file
