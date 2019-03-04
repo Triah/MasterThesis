@@ -3,26 +3,33 @@
     ViewData["Title"] = "Create";
 }
 <h2>Create Game Details</h2>
-@{ 
+@{
     var list = ViewData["ListOfGames"] as List<MasterThesisPlatform.Models.MongoDBGameRooms>;
-    var fileContents = ViewData["ContentsOfFile"] as string;
+    var fileContents = ViewData["ContentsOfFile"] as List<MasterThesisPlatform.Models.MongoDBScript>;
+    //var fileContents = ViewData["ContentsOfFile"] as string[];
 }
 
-<p>@fileContents</p>
+@foreach (var script in fileContents)
+{
+    <p>@script.Category</p>
+    <p>@script.ComponentContent</p>
+    <p>@script.ComponentSuperName</p>
+    <p>@script.ComponentName</p>
+}
 
 
-<hr />
+<hr />foreach
 <div class="palette-wrapper">
     <div class="palette-categories">
         @foreach (var item in list)
         {
             //This is an example of how to use mongoDB to dynamically create the list and operations
             //need methods for the actual code and a function that interprets the code or creates a file
-        <div class="palette-category-item" onclick="alert('@item.game')">
-            <p>@item.roomname</p>
-        </div>
+            <div class="palette-category-item" onclick="alert('@item.game')">
+                <p>@item.roomname</p>
+            </div>
         }
-        
+
     </div>
     <div class="palette-elements">
 

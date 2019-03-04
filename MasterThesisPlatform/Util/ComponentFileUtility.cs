@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MasterThesisPlatform.Models;
+using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,11 +11,10 @@ namespace MasterThesisPlatform.Util
     public class ComponentFileUtility
     {
         string path { get; set; }
-        string fileName { get; set; }
-        public ComponentFileUtility(string path, string fileName)
+
+        public ComponentFileUtility(string path)
         {
             this.path = path;
-            this.fileName = fileName;
         }
 
         public void setNewPath(string newPath)
@@ -38,7 +39,7 @@ namespace MasterThesisPlatform.Util
         public string[] GetFileNames()
         {
             string[] names = new string[GetFiles().Length];
-            for(int i = 0; i < GetFiles().Length; i++)
+            for (int i = 0; i < GetFiles().Length; i++)
             {
                 string[] splitPath = GetFiles()[i].Split("\\");
                 names[i] = splitPath[splitPath.Length - 1];
@@ -59,7 +60,7 @@ namespace MasterThesisPlatform.Util
 
         public string GetSuperClass(string className)
         {
-            for(int i = 0; i < GetFileNames().Length; i++)
+            for (int i = 0; i < GetFileNames().Length; i++)
             {
                 if (className.Equals(GetFileNames()[i]))
                 {
@@ -68,26 +69,67 @@ namespace MasterThesisPlatform.Util
                     {
                         string[] stringSplit = contentsOfFile.Split("extends");
                         string[] isolationSplit = stringSplit[1].Split(" ");
-                        for(int j = 0; j < isolationSplit.Length; j++)
+                        for (int j = 0; j < isolationSplit.Length; j++)
                         {
-                            if(!isolationSplit[j].Equals(" ") && !isolationSplit[j].Equals(""))
+                            if (!isolationSplit[j].Equals(" ") && !isolationSplit[j].Equals(""))
                             {
                                 return isolationSplit[j];
                             }
                         }
-                        
+
                     }
                 }
             }
             return null;
         }
 
+        private IMongoDatabase mongoDatabase;
+
+        public IMongoDatabase GetMongoDatabase()
+        {
+            var mongoClient = new MongoClient("mongodb://localhost:27017");
+            return mongoClient.GetDatabase("MasterThesisMongoDb");
+        }
+
+        public string GetFileName(string path)
+        {
+            for (int i = 0; i < GetFiles().Length; i++)
+            {
+                if (path.Equals(GetFiles()[i]))
+                {
+                    string[] array = GetFiles()[i].Split("\\");
+                    string name = array[array.Length - 1];
+                    return name;
+                }
+            }
+            return null;
+        }
+
+        public string GetCategory()
+        {
+            string[] categoryDir = this.path.Split("\\");
+            string category = categoryDir[categoryDir.Length - 1];
+            return category;
+        }
+
         public void addFileObjectToMongoDB()
         {
-            //TODO
-            //Needs File name, category, 
-            //filetype, probably a path for each server to fetch it 
-            //and the contents of the class so it can be generated.
+            string[] filePaths = new string[GetFiles().Length];
+            for (int i = 0; i < GetFiles().Length; i++)
+            {
+                filePaths[i] = GetFiles()[i];
+
+                MongoDBScript script = new MongoDBScript();
+                script.Category = GetCategory();
+                script.ComponentName = GetFileName(filePaths[i]);
+                script.ComponentSuperName = GetSuperClass(GetFileName(filePaths[i]));
+                script.ComponentContent = GetFileContents(filePaths[i]);
+                mongoDatabase = GetMongoDatabase();
+                mongoDatabase.GetCollection<MongoDBScript>("Scripts").InsertOne(script);
+            }
+
+
+
         }
 
         public string GetFileContents(string filePath)

@@ -51,14 +51,20 @@ namespace MasterThesisPlatform.Controllers
         [HttpGet]
         public IActionResult CreateMongoDbGameEntry()
         {
-            ComponentFileUtility fileContents = new ComponentFileUtility(@"C:\Users\Nicolai\Desktop\GameClient\static\modules\abstract", "shape.js");
+            ComponentFileUtility fileContents = new ComponentFileUtility(@"C:\Users\Nicolai\Desktop\GameClient\static\modules\abstract");
+            //fileContents.addFileObjectToMongoDB();
             List<MongoDBGameRooms> array = new List<MongoDBGameRooms>();
+            List<MongoDBScript> scriptList = new List<MongoDBScript>();
             mongoDatabase = GetMongoDatabase();
             foreach(MongoDBGameRooms room in mongoDatabase.GetCollection<MongoDBGameRooms>("GameRooms").Find(FilterDefinition<MongoDBGameRooms>.Empty).ToList())
             {
                 array.Add(room);
             }
-            ViewData["ContentsOfFile"] = fileContents.GetSuperClass("collisionShape.js");
+            foreach(MongoDBScript script in mongoDatabase.GetCollection<MongoDBScript>("Scripts").Find(FilterDefinition<MongoDBScript>.Empty).ToList())
+            {
+                scriptList.Add(script);
+            }
+            ViewData["ContentsOfFile"] = scriptList;
             ViewData["ListOfGames"] = array;
             return View();
         }
