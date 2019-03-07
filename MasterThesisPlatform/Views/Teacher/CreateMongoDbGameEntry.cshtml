@@ -6,27 +6,33 @@
 @{
     var list = ViewData["ListOfGames"] as List<MasterThesisPlatform.Models.MongoDBGameRooms>;
     var fileContents = ViewData["ContentsOfFile"] as List<MasterThesisPlatform.Models.MongoDBScript>;
-    //var fileContents = ViewData["ContentsOfFile"] as string[];
+
+    List<string> categories = new List<string>();
+    foreach(var script in fileContents)
+    {
+        if (!categories.Contains(script.Category))
+        {
+            categories.Add(script.Category);
+        }
+    }
+
 }
 
-@foreach (var script in fileContents)
+@foreach (var cat in categories)
 {
-    <p>@script.Category</p>
-    <p>@script.ComponentContent</p>
-    <p>@script.ComponentSuperName</p>
-    <p>@script.ComponentName</p>
+    <p>@cat</p>
 }
 
 
-<hr />foreach
+<hr />
 <div class="palette-wrapper">
     <div class="palette-categories">
-        @foreach (var item in list)
+        @foreach (var item in categories)
         {
             //This is an example of how to use mongoDB to dynamically create the list and operations
             //need methods for the actual code and a function that interprets the code or creates a file
-            <div class="palette-category-item" onclick="alert('@item.game')">
-                <p>@item.roomname</p>
+            <div class="palette-category-item" onclick="alert('@item')">
+                <p>@item</p>
             </div>
         }
 
@@ -37,7 +43,9 @@
 </div>
 
 <script>
+    function showPalette(category) {
 
+    }
 </script>
 
 <hr />

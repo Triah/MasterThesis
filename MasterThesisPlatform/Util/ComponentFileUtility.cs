@@ -149,5 +149,30 @@ namespace MasterThesisPlatform.Util
             }
             return fileContents;
         }
+
+        public void CreateNewGameFile()
+        {
+            if (File.Exists(StaticConstants.PathOfNodeJSGameFile))
+            {
+                try
+                {
+                    if (File.Exists(@"C:\Users\Nicolai\Desktop\GameClient\static\testingReplacement.txt"))
+                    {
+                        File.Delete(@"C:\Users\Nicolai\Desktop\GameClient\static\testingReplacement.txt");
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+                finally
+                {
+                    var gameFile = File.Create(@"C:\Users\Nicolai\Desktop\GameClient\static\testingReplacement.txt");
+                    gameFile.Close();
+                    
+                }
+
+            }
+        }
     }
 }
