@@ -1,6 +1,8 @@
-﻿using MasterThesisPlatform.Util;
+﻿using MasterThesisPlatform.Models;
+using MasterThesisPlatform.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,10 +16,26 @@ namespace MasterThesisPlatform.Controllers
     {
         ComponentFileUtility fileUtility = new ComponentFileUtility(Directory.GetCurrentDirectory() + "/wwwroot/js/components/");
 
-        [Route("")]
+        private IMongoDatabase mongoDatabase;
+
+        public IMongoDatabase GetMongoDatabase()
+        {
+            var mongoClient = new MongoClient("mongodb://localhost:27017");
+            return mongoClient.GetDatabase("MasterThesisMongoDb");
+        }
+
         [Route("Index")]
         public IActionResult Index()
         {
+            List<MongoDBScript> scriptList = new List<MongoDBScript>();
+            mongoDatabase = GetMongoDatabase();
+
+            foreach (MongoDBScript script in mongoDatabase.GetCollection<MongoDBScript>("Scripts").Find(FilterDefinition<MongoDBScript>.Empty).ToList())
+            {
+                scriptList.Add(script);
+            }
+            ViewData["filesList"] = scriptList;
+
             return View();
         }
 
@@ -38,9 +56,10 @@ namespace MasterThesisPlatform.Controllers
                             await file.CopyToAsync(stream);
                         }
                     }
+                    fileUtility.addFileToMongoFromDeveloper(file);
                 }
             }
-            return View("Index");
+            return RedirectToAction("Index");
         }
     }
 }

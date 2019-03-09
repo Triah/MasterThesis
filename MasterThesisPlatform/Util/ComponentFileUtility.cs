@@ -1,4 +1,5 @@
 ﻿using MasterThesisPlatform.Models;
+using Microsoft.AspNetCore.Http;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -74,8 +75,13 @@ namespace MasterThesisPlatform.Util
                         string[] isolationSplit = stringSplit[1].Split(" ");
                         for (int j = 0; j < isolationSplit.Length; j++)
                         {
+                            
                             if (!isolationSplit[j].Equals(" ") && !isolationSplit[j].Equals(""))
                             {
+                                if (isolationSplit[j].Contains("{"))
+                                {
+                                    return isolationSplit[j].Replace("{", "");
+                                }
                                 return isolationSplit[j];
                             }
                         }
@@ -130,9 +136,17 @@ namespace MasterThesisPlatform.Util
                 mongoDatabase = GetMongoDatabase();
                 mongoDatabase.GetCollection<MongoDBScript>("Scripts").InsertOne(script);
             }
+        }
 
-
-
+        public void addFileToMongoFromDeveloper(IFormFile file)
+        {
+            MongoDBScript script = new MongoDBScript();
+            script.Category = this.category;
+            script.ComponentContent = File.ReadAllText(this.path + file.FileName);
+            script.ComponentName = file.FileName;
+            script.ComponentSuperName = GetSuperClass(file.FileName);
+            mongoDatabase = GetMongoDatabase();
+            mongoDatabase.GetCollection<MongoDBScript>("Scripts").InsertOne(script);
         }
 
         public string GetFileContents(string filePath)
