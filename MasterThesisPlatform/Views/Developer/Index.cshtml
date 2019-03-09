@@ -9,7 +9,20 @@
     var user = await UserManager.GetUserAsync(User);
     if (user.Role.Equals("Developer"))
     {
-        <h1>This is the developer page</h1>
+        <form method="post" enctype="multipart/form-data" asp-controller="Developer" asp-action="UploadComponentAsync">
+            <input type="text" id="category" name="categoryDefinition" placeholder="Put Category for Files" />
+            <div class="form-group">
+                <div class="col-md-10">
+                    <p>Upload one or more files using this form:</p>
+                    <input type="file" name="files" multiple />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input type="submit" value="Upload" />
+                </div>
+            </div>
+        </form>
 
     }
     else

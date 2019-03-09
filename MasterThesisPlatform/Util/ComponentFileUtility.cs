@@ -10,7 +10,8 @@ namespace MasterThesisPlatform.Util
 {
     public class ComponentFileUtility
     {
-        string path { get; set; }
+        public string path { get; set; }
+        public string category { get; set; }
 
         public ComponentFileUtility(string path)
         {
@@ -19,10 +20,12 @@ namespace MasterThesisPlatform.Util
 
         public void setNewPath(string newPath)
         {
-            if (path != null)
-            {
                 path = newPath;
-            }
+        }
+
+        public void setCategoryOfFile(string category)
+        {
+            this.category = category;
         }
 
 
