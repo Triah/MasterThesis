@@ -42,6 +42,14 @@ namespace MasterThesisPlatform.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadComponentAsync(List<IFormFile> files, string categoryDefinition)
         {
+            List<MongoDBScript> scriptList = new List<MongoDBScript>();
+            mongoDatabase = GetMongoDatabase();
+            bool exists = false;
+            foreach (MongoDBScript script in mongoDatabase.GetCollection<MongoDBScript>("Scripts").Find(FilterDefinition<MongoDBScript>.Empty).ToList())
+            {
+                scriptList.Add(script);
+            }
+
             if (!categoryDefinition.Equals(""))
             {
                 fileUtility.setCategoryOfFile(categoryDefinition);
@@ -56,7 +64,21 @@ namespace MasterThesisPlatform.Controllers
                             await file.CopyToAsync(stream);
                         }
                     }
-                    fileUtility.addFileToMongoFromDeveloper(file);
+
+                    foreach(var script in scriptList)
+                    {
+                        if (script.ComponentName == file.FileName &&
+                            script.Category == fileUtility.category)
+                        {
+                            exists = true;
+                        }
+                    }
+
+                    if (!exists)
+                    {
+                        fileUtility.addFileToMongoFromDeveloper(file);
+                    }
+                    
                 }
             }
             return RedirectToAction("Index");
