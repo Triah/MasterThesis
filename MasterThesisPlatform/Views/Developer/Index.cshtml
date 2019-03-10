@@ -14,15 +14,7 @@
     if (user.Role.Equals("Developer"))
     {
 
-        foreach (var item in fileContents)
-        {
-            <hr />
-            <p>@item.ComponentName</p>
-            <p>@item.ComponentSuperName</p>
-            <p>@item.Category</p>
-            <p>@item.ComponentContent</p>
-            <hr />
-        }
+        
 
         <form method="post" enctype="multipart/form-data" asp-controller="Developer" asp-action="UploadComponentAsync">
             <input type="text" id="category" name="categoryDefinition" placeholder="Put Category for Files" />
@@ -34,11 +26,29 @@
             </div>
             <div class="form-group">
                 <div class="col-md-10">
-                    <input type="submit" value="Upload" />
+                    <input type="submit" value="Upload" onclick="sendRequest()" />
                 </div>
             </div>
         </form>
 
+
+        <script type="text/javascript">
+            function sendRequest() {
+                $.ajax({
+                    method: "POST",
+                    url: "http://localhost:5000",
+                    crossDomain: true,
+                    data: { "message": "file_uploaded" },
+                    success: function (data, textStatus) {
+                        //do nothing    
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+            }
+            
+        </script>
     }
     else
     {

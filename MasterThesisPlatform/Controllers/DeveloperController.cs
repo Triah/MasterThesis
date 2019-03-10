@@ -36,6 +36,8 @@ namespace MasterThesisPlatform.Controllers
             }
             ViewData["filesList"] = scriptList;
 
+
+
             return View();
         }
 

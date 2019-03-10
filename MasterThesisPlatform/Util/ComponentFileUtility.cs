@@ -167,8 +167,11 @@ namespace MasterThesisPlatform.Util
             return fileContents;
         }
 
+
+
         public void CreateNewGameFile()
         {
+            /* TODO
             if (File.Exists(StaticConstants.PathOfNodeJSGameFile))
             {
                 try
@@ -189,7 +192,7 @@ namespace MasterThesisPlatform.Util
                     
                 }
 
-            }
+            }*/
         }
     }
 }
