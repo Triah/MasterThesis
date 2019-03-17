@@ -8,7 +8,8 @@
     var fileContents = ViewData["ContentsOfFile"] as List<MasterThesisPlatform.Models.MongoDBScript>;
 
     List<string> categories = new List<string>();
-    foreach(var script in fileContents)
+
+    foreach (var script in fileContents)
     {
         if (!categories.Contains(script.Category))
         {
@@ -31,7 +32,7 @@
         {
             //This is an example of how to use mongoDB to dynamically create the list and operations
             //need methods for the actual code and a function that interprets the code or creates a file
-            <div class="palette-category-item" onclick="alert('@item')">
+            <div class="palette-category-item" onclick="showPalette('@item')">
                 <p>@item</p>
             </div>
         }
@@ -43,8 +44,50 @@
 </div>
 
 <script>
-    function showPalette(category) {
+    function decodeHtml(html) {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    }
+    var objectsInCategory = [];
+</script>
 
+<script>
+
+    console.log(@fileContents.Count);
+</script>
+
+@foreach (var obj in fileContents)
+{
+    if (obj.ComponentSuperName == null)
+    {
+        <script>
+            objForList = { "Category": decodeHtml("@obj.Category"), "ComponentName": decodeHtml("@obj.ComponentName"), "ComponentContent": decodeHtml("@obj.ComponentContent") };
+            objectsInCategory.push(objForList);
+        </script>
+    }
+    else
+    {
+        <script>
+            objForList = { "Category": decodeHtml("@obj.Category"), "ComponentName": decodeHtml("@obj.ComponentName"), "ComponentContent": decodeHtml("@obj.ComponentContent"), "ComponentSuperName": decodeHtml("@obj.ComponentSuperName") };
+            objectsInCategory.push(objForList);
+        </script>
+    }
+
+
+
+}
+
+<script>
+    function showPalette(category) {
+        var relevantObjectsList = [];
+        for (var i = 0; i < objectsInCategory.length; i++) {
+            if (objectsInCategory[i].Category == category) {
+                relevantObjectsList.push(objectsInCategory[i]);
+            }
+        }
+        console.log(relevantObjectsList);
+        return relevantObjectsList;
     }
 </script>
 

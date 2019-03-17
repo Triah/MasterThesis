@@ -52,8 +52,6 @@ namespace MasterThesisPlatform.Controllers
         public IActionResult CreateMongoDbGameEntry()
         {
             ComponentFileUtility fileContents = new ComponentFileUtility(@"C:\Users\Nicolai\Desktop\GameClient\static\modules\shapes");
-            fileContents.addFileObjectToMongoDB();
-            fileContents.CreateNewGameFile();
             List<MongoDBGameRooms> array = new List<MongoDBGameRooms>();
             List<MongoDBScript> scriptList = new List<MongoDBScript>();
             mongoDatabase = GetMongoDatabase();
