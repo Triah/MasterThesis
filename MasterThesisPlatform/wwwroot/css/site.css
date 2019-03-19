@@ -48,11 +48,12 @@ body {
     overflow-y: auto;
 }
 
-.palette-elements{
-    float:right;
-    width:80%;
-    height:100%;
-    border:solid 1px;
+.palette-elements {
+    float: right;
+    width: 80%;
+    height: 100%;
+    border: solid 1px;
+    overflow-y: auto;
 }
 
 .palette-category-item{
@@ -64,10 +65,30 @@ body {
     transform: translate(2%, 25%);
 }
 
-
-
 .building-canvas canvas {
     width: 800px;
     height: 600px;
     border: 2px solid black;
+}
+
+.palette-elements button[id="buttonAddToCanvas"] {
+    background-color: white; 
+    border: none;
+    color: black;
+    width:24.6%;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    border-radius: 4px;
+    border: solid 1px;
+    margin-right:3px;
+    margin-bottom: 3px;
+}
+
+@media screen and (max-width: 1199px) {
+    .palette-elements button[id="buttonAddToCanvas"] {
+        width:32%;
+    }
 }

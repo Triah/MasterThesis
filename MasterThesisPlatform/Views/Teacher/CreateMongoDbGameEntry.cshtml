@@ -19,12 +19,6 @@
 
 }
 
-@foreach (var cat in categories)
-{
-    <p>@cat</p>
-}
-
-
 <hr />
 <div class="palette-wrapper">
     <div class="palette-categories">
@@ -38,8 +32,7 @@
         }
 
     </div>
-    <div class="palette-elements">
-
+    <div class="palette-elements" id="paletteele">
     </div>
 </div>
 
@@ -50,6 +43,7 @@
         return txt.value;
     }
     var objectsInCategory = [];
+    var buttonsForThis = [];
 </script>
 
 <script>
@@ -80,14 +74,20 @@
 
 <script>
     function showPalette(category) {
-        var relevantObjectsList = [];
+        document.getElementById("paletteele").innerHTML = "";
+        buttonsForThis = [];
         for (var i = 0; i < objectsInCategory.length; i++) {
             if (objectsInCategory[i].Category == category) {
-                relevantObjectsList.push(objectsInCategory[i]);
+                buttonsForThis.push(objectsInCategory[i]);
             }
         }
-        console.log(relevantObjectsList);
-        return relevantObjectsList;
+        if (buttonsForThis[0] != null) {
+            for (var i = 0; i < buttonsForThis.length; i++) {
+                document.getElementById("paletteele").innerHTML += "<button id="+ "buttonAddToCanvas" +">" + buttonsForThis[i].ComponentName + "</button>"
+            }
+        }
+    console.log(buttonsForThis);
+    return buttonsForThis;
     }
 </script>
 
