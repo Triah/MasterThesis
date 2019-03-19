@@ -51,7 +51,7 @@ namespace MasterThesisPlatform.Controllers
         [HttpGet]
         public IActionResult CreateMongoDbGameEntry()
         {
-            ComponentFileUtility fileContents = new ComponentFileUtility(@"C:\Users\Nicolai\Desktop\GameClient\static\modules\shapes");
+            ComponentFileUtility fileContents = new ComponentFileUtility(null);
             List<MongoDBGameRooms> array = new List<MongoDBGameRooms>();
             List<MongoDBScript> scriptList = new List<MongoDBScript>();
             mongoDatabase = GetMongoDatabase();
@@ -63,6 +63,7 @@ namespace MasterThesisPlatform.Controllers
             {
                 scriptList.Add(script);
             }
+            fileContents.ExtendComponentsFileForBuilding();
             ViewData["ContentsOfFile"] = scriptList;
             ViewData["ListOfGames"] = array;
             return View();

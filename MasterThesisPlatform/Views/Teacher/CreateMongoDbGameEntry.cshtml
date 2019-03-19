@@ -1,11 +1,16 @@
 ﻿@model MasterThesisPlatform.Models.MongoDBGame
 @{
     ViewData["Title"] = "Create";
+
 }
+
+
 <h2>Create Game Details</h2>
 @{
     var list = ViewData["ListOfGames"] as List<MasterThesisPlatform.Models.MongoDBGameRooms>;
     var fileContents = ViewData["ContentsOfFile"] as List<MasterThesisPlatform.Models.MongoDBScript>;
+
+    var path = ViewData["nomoduleContent"];
 
     List<string> categories = new List<string>();
 
@@ -16,8 +21,9 @@
             categories.Add(script.Category);
         }
     }
-
 }
+
+<p>@path</p>
 
 <hr />
 <div class="palette-wrapper">
@@ -36,6 +42,18 @@
     </div>
 </div>
 
+
+
+<hr />
+<div class="building-canvas">
+    <canvas id="canvas"></canvas>
+</div>
+
+
+<script src="~/js/nomodulecomponentscollection.js"></script>
+<script src="~/js/gamerepresentation.js"></script>
+
+
 <script>
     function decodeHtml(html) {
         var txt = document.createElement("textarea");
@@ -44,11 +62,6 @@
     }
     var objectsInCategory = [];
     var buttonsForThis = [];
-</script>
-
-<script>
-
-    console.log(@fileContents.Count);
 </script>
 
 @foreach (var obj in fileContents)
@@ -67,9 +80,6 @@
             objectsInCategory.push(objForList);
         </script>
     }
-
-
-
 }
 
 <script>
@@ -83,18 +93,19 @@
         }
         if (buttonsForThis[0] != null) {
             for (var i = 0; i < buttonsForThis.length; i++) {
-                document.getElementById("paletteele").innerHTML += "<button id="+ "buttonAddToCanvas" +">" + buttonsForThis[i].ComponentName + "</button>"
+                document.getElementById("paletteele").innerHTML += "<button id=" + "buttonAddToCanvas" + " onclick=" + "addObject(" + '"' + buttonsForThis[i].ComponentName + '"' + ")" + ">" + buttonsForThis[i].ComponentName + "</button>"
             }
         }
-    console.log(buttonsForThis);
-    return buttonsForThis;
+        return buttonsForThis;
+    }
+    function addObject(object) {
+        for (var i = 0; i < buttonsForThis.length; i++) {
+            if (object == buttonsForThis[i].ComponentName) {
+                createObject(buttonsForThis[i]);
+            }
+        }
     }
 </script>
-
-<hr />
-<div class="building-canvas">
-    <canvas id="canvas"></canvas>
-</div>
 
 
 <hr />

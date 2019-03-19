@@ -21,7 +21,7 @@ namespace MasterThesisPlatform.Util
 
         public void setNewPath(string newPath)
         {
-                path = newPath;
+            path = newPath;
         }
 
         public void setCategoryOfFile(string category)
@@ -75,7 +75,7 @@ namespace MasterThesisPlatform.Util
                         string[] isolationSplit = stringSplit[1].Split(" ");
                         for (int j = 0; j < isolationSplit.Length; j++)
                         {
-                            
+
                             if (!isolationSplit[j].Equals(" ") && !isolationSplit[j].Equals(""))
                             {
                                 if (isolationSplit[j].Contains("{"))
@@ -167,7 +167,77 @@ namespace MasterThesisPlatform.Util
             return fileContents;
         }
 
+        public void ExtendComponentsFileForBuilding()
+        {
+            string filePath = Directory.GetCurrentDirectory() + @"\wwwroot\js\nomodulecomponentscollection.js";
+            if (File.Exists(filePath))
+            {
+                mongoDatabase = GetMongoDatabase();
+                string text = "";
+                List<MongoDBScript> scriptList = new List<MongoDBScript>();
+                foreach (MongoDBScript script in mongoDatabase.GetCollection<MongoDBScript>("Scripts").Find(FilterDefinition<MongoDBScript>.Empty).ToList())
+                {
+                    scriptList.Add(script);
+                }
+                List<string> filesInNoModuleComponents = new List<string>();
+                text += "'" + "use strict" + "';";
+                foreach (MongoDBScript s in scriptList)
+                {
 
+                    string completeContentPostStrict = s.ComponentContent.Split(";")[1];
+                    string[] completeContent = completeContentPostStrict.Split(" ");
+                    string content = s.ComponentContent.Split("default")[1];
+                    string componentName = s.ComponentName.Split(".")[0];
+                    string nomoduleName = s.Category.ToLower() + Char.ToLowerInvariant(componentName[0]) + componentName.Substring(1);
+                    string[] allContentsOfFile = content.Split(" ");
+                    string nonmoduleExtension = "";
+                    if (!filesInNoModuleComponents.Contains(nomoduleName))
+                    {
+                        for (int i = 0; i < completeContent.Length; i++)
+                        {
+                            if (completeContent[i].Contains("import"))
+                            {
+                                string superCategory = completeContent[i + 3].Split("/")[1];
+                                nonmoduleExtension = superCategory.ToLower() + Char.ToLowerInvariant(s.ComponentSuperName[0]) + s.ComponentSuperName.Substring(1);
+                            }
+                        }
+
+                        for (int i = 0; i < allContentsOfFile.Length; i++)
+                        {
+                            if (allContentsOfFile[i].Equals("class"))
+                            {
+                                allContentsOfFile[i + 1] = nomoduleName;
+                            }
+                            if (allContentsOfFile[i].Equals("extends"))
+                            {
+                                if (allContentsOfFile[i + 1].Contains("{")){
+                                    allContentsOfFile[i + 1] = nonmoduleExtension+" {";
+                                } else
+                                {
+                                    allContentsOfFile[i + 1] = nonmoduleExtension;
+                                }
+                                
+                            }
+                        }
+
+                        for (int i = 0; i < allContentsOfFile.Length; i++)
+                        {
+                            text += " " + allContentsOfFile[i];
+                        }
+                        filesInNoModuleComponents.Add(nomoduleName);
+                    }
+
+                }
+
+                File.WriteAllText(filePath, text);
+                
+            }
+            else
+            {
+                File.Create(filePath);
+                ExtendComponentsFileForBuilding();
+            }
+        }
 
         public void CreateNewGameFile()
         {

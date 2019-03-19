@@ -19,5 +19,7 @@ namespace MasterThesisPlatform.Models
         public string ComponentContent { get; set; }
         [BsonElement]
         public string Category { get; set; }
+        [BsonElement]
+        public string SuperCategory { get; set; }
     }
 }
