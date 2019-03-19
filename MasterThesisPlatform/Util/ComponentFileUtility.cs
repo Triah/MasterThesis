@@ -180,10 +180,29 @@ namespace MasterThesisPlatform.Util
                     scriptList.Add(script);
                 }
                 List<string> filesInNoModuleComponents = new List<string>();
-                text += "'" + "use strict" + "';";
+                List<MongoDBScript> sortedScripts = new List<MongoDBScript>();
+
+                foreach(MongoDBScript s in scriptList)
+                {
+                    if(s.ComponentSuperName == null)
+                    {
+                        sortedScripts.Add(s);
+                    }
+                }
+
                 foreach (MongoDBScript s in scriptList)
                 {
+                    if (s.ComponentSuperName != null)
+                    {
+                        sortedScripts.Add(s);
+                    }
+                }
 
+
+                text += "'" + "use strict" + "';";
+                foreach (MongoDBScript s in sortedScripts)
+                {
+                    
                     string completeContentPostStrict = s.ComponentContent.Split(";")[1];
                     string[] completeContent = completeContentPostStrict.Split(" ");
                     string content = s.ComponentContent.Split("default")[1];
