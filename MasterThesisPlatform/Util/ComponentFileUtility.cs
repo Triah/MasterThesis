@@ -258,30 +258,10 @@ namespace MasterThesisPlatform.Util
             }
         }
 
-        public void CreateNewGameFile()
+        public void createGameRepresentationFile()
         {
-            /* TODO
-            if (File.Exists(StaticConstants.PathOfNodeJSGameFile))
-            {
-                try
-                {
-                    if (File.Exists(@"C:\Users\Nicolai\Desktop\GameClient\static\testingReplacement.txt"))
-                    {
-                        File.Delete(@"C:\Users\Nicolai\Desktop\GameClient\static\testingReplacement.txt");
-                    }
-                }
-                catch (Exception e)
-                {
-
-                }
-                finally
-                {
-                    var gameFile = File.Create(@"C:\Users\Nicolai\Desktop\GameClient\static\testingReplacement.txt");
-                    gameFile.Close();
-                    
-                }
-
-            }*/
+            //TODO: Generate a combined file with both the creation method and the static methods which handle the actions of components
         }
+        
     }
 }
