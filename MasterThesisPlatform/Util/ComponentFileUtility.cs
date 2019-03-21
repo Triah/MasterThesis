@@ -253,14 +253,61 @@ namespace MasterThesisPlatform.Util
             }
             else
             {
-                File.Create(filePath);
+                var file = File.Create(filePath);
+                file.Close();
                 ExtendComponentsFileForBuilding();
             }
         }
 
         public void createGameRepresentationFile()
         {
-            //TODO: Generate a combined file with both the creation method and the static methods which handle the actions of components
+            string filePath = Directory.GetCurrentDirectory() + @"\wwwroot\js\gamerepresentation.js";
+            if (File.Exists(filePath))
+            {
+                string staticFilePath = Directory.GetCurrentDirectory() + @"\wwwroot\js\staticbuildmethods\staticbuildelements.js";
+                mongoDatabase = GetMongoDatabase();
+                string textForDynamicFunction = "";
+                List<MongoDBScript> scriptList = new List<MongoDBScript>();
+                foreach (MongoDBScript script in mongoDatabase.GetCollection<MongoDBScript>("Scripts").Find(FilterDefinition<MongoDBScript>.Empty).ToList())
+                {
+                    scriptList.Add(script);
+                }
+                List<string> namesForMethodComparison = new List<string>();
+                foreach(MongoDBScript s in scriptList)
+                {
+                    namesForMethodComparison.Add(s.Category.ToLower() + Char.ToLowerInvariant(s.ComponentName[0]) + s.ComponentName.Substring(1));
+                }
+                string staticFileText = File.ReadAllText(staticFilePath);
+
+                //dynamic method for object creation
+                //TODO: add default parameter values as an obligatory method in the components
+                textForDynamicFunction = "\n function createObject(object){ \n" +
+                    "var catAndName = object.Category.toLowerCase() + object.ComponentName.charAt(0).toLowerCase() + object.ComponentName.substr(1) \n";
+                for(int i = 0; i < namesForMethodComparison.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        textForDynamicFunction += "\n" +"if(catAndName == " + '"' + namesForMethodComparison[i] + '"' + ") { \n" +
+                            "object = new " + namesForMethodComparison[i].Split(".")[0] + "(" + i + ", [{ " + "x" + ": 100," + "y" + ": 100 }, {" + "x" + ": 100, " + "y" + ": 150 }, { " + "x" + ": 150," + "y" + ": 200 }],true, true, true); //add defaulting variables so it can all be null";
+                        textForDynamicFunction += "\n object.draw(context)\n";
+                        textForDynamicFunction += "canvasObjects.push(object);}\n";
+                    } else
+                    {
+                        textForDynamicFunction += "\n"+ "else if(catAndName == " + '"' + namesForMethodComparison[i] + '"' + ") { \n" +
+                            "object = new " + namesForMethodComparison[i].Split(".")[0] + "(" + i + ", [{ " + "x" + ": 100," + "y" + ": 100 }, {" + "x" + ": 100, " + "y" + ": 150 }, { " + "x" + ": 150," + "y" + ": 200 }],true, true, true); //add defaulting variables so it can all be null";
+                        textForDynamicFunction += "\n object.draw(context)\n";
+                        textForDynamicFunction += "canvasObjects.push(object);}\n";
+                    }
+                }
+                textForDynamicFunction += "\n }";
+
+                File.WriteAllText(filePath, staticFileText + textForDynamicFunction);
+            } else
+            {
+                var file = File.Create(filePath);
+                file.Close();
+                createGameRepresentationFile();
+            }
         }
         
     }

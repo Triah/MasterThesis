@@ -64,6 +64,7 @@ namespace MasterThesisPlatform.Controllers
                 scriptList.Add(script);
             }
             fileContents.ExtendComponentsFileForBuilding();
+            fileContents.createGameRepresentationFile();
             ViewData["ContentsOfFile"] = scriptList;
             ViewData["ListOfGames"] = array;
             return View();
