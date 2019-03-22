@@ -38,17 +38,20 @@ canvas.onmouseup = function (e) {
 var catAndName = object.Category.toLowerCase() + object.ComponentName.charAt(0).toLowerCase() + object.ComponentName.substr(1) 
 
 if(catAndName == "abstractcollisionShape.js") { 
-object = new abstractcollisionShape(0, [{ x: 100,y: 100 }, {x: 100, y: 150 }, { x: 150,y: 200 }],true, true, true); //add defaulting variables so it can all be null
+object = new abstractcollisionShape(0, null, null, null, null); //add defaulting variables so it can all be null
+ object.setDefaultForUninstantiatedParameters(canvas)
  object.draw(context)
 canvasObjects.push(object);}
 
 else if(catAndName == "abstractshape.js") { 
-object = new abstractshape(1, [{ x: 100,y: 100 }, {x: 100, y: 150 }, { x: 150,y: 200 }],true, true, true); //add defaulting variables so it can all be null
+object = new abstractshape(1, null, null, null, null); //add defaulting variables so it can all be null
+ object.setDefaultForUninstantiatedParameters(canvas)
  object.draw(context)
 canvasObjects.push(object);}
 
 else if(catAndName == "shapessquare.js") { 
-object = new shapessquare(2, [{ x: 100,y: 100 }, {x: 100, y: 150 }, { x: 150,y: 200 }],true, true, true); //add defaulting variables so it can all be null
+object = new shapessquare(2, null, null, null, null); //add defaulting variables so it can all be null
+ object.setDefaultForUninstantiatedParameters(canvas)
  object.draw(context)
 canvasObjects.push(object);}
 

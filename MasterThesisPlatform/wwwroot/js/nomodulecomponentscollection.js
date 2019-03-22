@@ -8,6 +8,22 @@
         this.targetAble = targetAble;
     }
 
+    setDefaultForUninstantiatedParameters(canvas){
+        if(this.bounds == null){
+            this.bounds = [{x:canvas.width/2-100, y:canvas.height/2+100},{x:canvas.width/2+150, y:canvas.height/2-150},{x:canvas.width/2+200, y:canvas.height/2+100}];
+        }
+        if(this.moveAble == null){
+            this.moveAble = true;
+        }
+        if(this.collideAble == null){
+            this.collideAble = false;
+        }
+        if(this.targetAble == null){
+            this.targetAble = false;
+        }
+        console.log(this)
+    }
+
     getBounds() {
         return this.bounds;
     }
@@ -200,6 +216,12 @@
         this.colliding = false;
     }
 
+    setDefaultForUninstantiatedParameters(canvas){
+        super.setDefaultForUninstantiatedParameters(canvas);
+        this.collideAble = true;
+        console.log(this);
+    }
+
     isCollidingWithOtherObject(objects) {
         var collision = null;
         if(this.calcCollisionOtherObjectsToThis(objects, this) != null){
@@ -369,8 +391,13 @@
 }  class shapessquare extends abstractshape
  {    constructor(id, bounds, moveAble, collideAble, targetAble){
         super(id, bounds, moveAble, collideAble, targetAble);
+    }
 
-        this.bounds = this.constructProperBounds(-200,-200);
+    setDefaultForUninstantiatedParameters(canvas){
+        super.setDefaultForUninstantiatedParameters(canvas);
+        this.bounds.push({x:100,y:100});
+        this.constructProperBounds(100,100);
+        console.log(this);
     }
 
     constructProperBounds(w,h){
