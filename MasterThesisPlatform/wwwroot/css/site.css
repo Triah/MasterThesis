@@ -69,6 +69,7 @@ body {
     width: 800px;
     height: 600px;
     border: 2px solid black;
+    float:left;
 }
 
 .palette-elements button[id="buttonAddToCanvas"] {
@@ -87,8 +88,36 @@ body {
     margin-bottom: 3px;
 }
 
+.buildmode-optionsAndInfo {
+    float: left;
+    width: 25%;
+    margin-left: 3%;
+}
+
+.buildmode-options{
+    width:100%;
+    height: 200px;
+    border:solid 1px;
+}
+
+.buildmode-options-heading h5{
+    text-align: center;
+}
+
 @media screen and (max-width: 1199px) {
     .palette-elements button[id="buttonAddToCanvas"] {
         width:32%;
     }
+
+    .buildmode-optionsAndInfo {
+        width:10%
+    }
 }
+
+@media screen and (max-width: 992px){
+    .buildmode-optionsAndInfo {
+        width: 100%
+    }
+}
+
+

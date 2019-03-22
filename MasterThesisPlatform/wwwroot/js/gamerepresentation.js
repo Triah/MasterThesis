@@ -5,6 +5,7 @@ var context = canvas.getContext('2d');
 var canvasObjects = []
 var lockedItem = null;
 var itemIsLocked = false;
+var idIndex = 0;
 
 canvas.onmousedown = function (e) {
     for (var i = 0; i < canvasObjects.length; i++) {
@@ -34,25 +35,51 @@ canvas.onmouseup = function (e) {
         lockedItem = null;
     }
 }
+
+function getObjects() {
+    return canvasObjects;
+}
  function createObject(object){ 
 var catAndName = object.Category.toLowerCase() + object.ComponentName.charAt(0).toLowerCase() + object.ComponentName.substr(1) 
 
 if(catAndName == "abstractcollisionShape.js") { 
-object = new abstractcollisionShape(0, null, null, null, null); //add defaulting variables so it can all be null
+object = new abstractcollisionShape(idIndex, null, null, null, null); //add defaulting variables so it can all be null
  object.setDefaultForUninstantiatedParameters(canvas)
  object.draw(context)
+
+ idIndex++; 
 canvasObjects.push(object);}
 
 else if(catAndName == "abstractshape.js") { 
-object = new abstractshape(1, null, null, null, null); //add defaulting variables so it can all be null
+object = new abstractshape(idIndex, null, null, null, null); //add defaulting variables so it can all be null
  object.setDefaultForUninstantiatedParameters(canvas)
  object.draw(context)
+
+ idIndex++; 
 canvasObjects.push(object);}
 
 else if(catAndName == "shapessquare.js") { 
-object = new shapessquare(2, null, null, null, null); //add defaulting variables so it can all be null
+object = new shapessquare(idIndex, null, null, null, null); //add defaulting variables so it can all be null
  object.setDefaultForUninstantiatedParameters(canvas)
  object.draw(context)
+
+ idIndex++; 
+canvasObjects.push(object);}
+
+else if(catAndName == "testscollisionShape.js") { 
+object = new testscollisionShape(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+ object.setDefaultForUninstantiatedParameters(canvas)
+ object.draw(context)
+
+ idIndex++; 
+canvasObjects.push(object);}
+
+else if(catAndName == "dwadwasquare.js") { 
+object = new dwadwasquare(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+ object.setDefaultForUninstantiatedParameters(canvas)
+ object.draw(context)
+
+ idIndex++; 
 canvasObjects.push(object);}
 
  }

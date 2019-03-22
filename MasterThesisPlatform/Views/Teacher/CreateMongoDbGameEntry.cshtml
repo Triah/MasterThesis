@@ -105,12 +105,23 @@
             }
         }
     }
+    function printObjects() {
+        console.log(JSON.stringify(getObjects()));
+    }
 </script>
 
+<button onclick="printObjects()" value="test"></button>
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="buildmode-optionsAndInfo">
+    <div class="buildmode-options">
+        <div class="buildmode-options-heading">
+            <h5><u>Options:</u></h5>
+        </div>
+    </div>
+    <div class="buildmode-info">
+
+        
+
         <form asp-action="CreateMongoDbGameEntry">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -144,8 +155,6 @@
         </form>
     </div>
 </div>
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

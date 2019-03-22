@@ -5,6 +5,7 @@ var context = canvas.getContext('2d');
 var canvasObjects = []
 var lockedItem = null;
 var itemIsLocked = false;
+var idIndex = 0;
 
 canvas.onmousedown = function (e) {
     for (var i = 0; i < canvasObjects.length; i++) {
@@ -33,4 +34,8 @@ canvas.onmouseup = function (e) {
         itemIsLocked = false;
         lockedItem = null;
     }
+}
+
+function getObjects() {
+    return canvasObjects;
 }

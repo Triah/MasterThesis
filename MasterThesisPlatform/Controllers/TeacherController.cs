@@ -63,8 +63,6 @@ namespace MasterThesisPlatform.Controllers
             {
                 scriptList.Add(script);
             }
-            fileContents.ExtendComponentsFileForBuilding();
-            fileContents.createGameRepresentationFile();
             ViewData["ContentsOfFile"] = scriptList;
             ViewData["ListOfGames"] = array;
             return View();
@@ -74,6 +72,8 @@ namespace MasterThesisPlatform.Controllers
         [HttpPost]
         public IActionResult CreateMongoDbGameEntry(MongoDBGame game)
         {
+            //TODO: Set the variables for game by requesting forms from the view and save it in the game object before inserting.
+            //Might want to hide the forms away, atleast some of them.
             try
             {
                 mongoDatabase = GetMongoDatabase();

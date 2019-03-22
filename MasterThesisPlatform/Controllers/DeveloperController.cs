@@ -79,6 +79,9 @@ namespace MasterThesisPlatform.Controllers
                     if (!exists)
                     {
                         fileUtility.addFileToMongoFromDeveloper(file);
+                        fileUtility.ExtendComponentsFileForBuilding();
+                        fileUtility.createGameRepresentationFile();
+                        
                     }
                     
                 }
