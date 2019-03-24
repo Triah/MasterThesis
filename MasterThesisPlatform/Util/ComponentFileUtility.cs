@@ -290,6 +290,7 @@ namespace MasterThesisPlatform.Util
                         textForDynamicFunction += "\n" +"if(catAndName == " + '"' + namesForMethodComparison[i] + '"' + ") { \n" +
                             "object = new " + namesForMethodComparison[i].Split(".")[0] + "(" + "idIndex" + ", null, null, null, null); //add defaulting variables so it can all be null";
                         textForDynamicFunction += "\n object.setDefaultForUninstantiatedParameters(canvas)";
+                        textForDynamicFunction += "\n object.setObjectName(catAndName.split(" + '"' + "." + '"' + ")[0]);";
                         textForDynamicFunction += "\n object.draw(context)\n";
                         textForDynamicFunction += "\n idIndex++; \n";
                         textForDynamicFunction += "canvasObjects.push(object);}\n";
@@ -298,6 +299,7 @@ namespace MasterThesisPlatform.Util
                         textForDynamicFunction += "\n"+ "else if(catAndName == " + '"' + namesForMethodComparison[i] + '"' + ") { \n" +
                                                         "object = new " + namesForMethodComparison[i].Split(".")[0] + "(" + "idIndex" + ", null, null, null, null); //add defaulting variables so it can all be null";
                         textForDynamicFunction += "\n object.setDefaultForUninstantiatedParameters(canvas)";
+                        textForDynamicFunction += "\n object.setObjectName(catAndName.split(" + '"' + "." + '"' +")[0]);";
                         textForDynamicFunction += "\n object.draw(context)\n";
                         textForDynamicFunction += "\n idIndex++; \n";
                         textForDynamicFunction += "canvasObjects.push(object);}\n";

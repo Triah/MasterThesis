@@ -1,12 +1,8 @@
-﻿@model MasterThesisPlatform.Models.MongoDBGame
+﻿@using Microsoft.AspNetCore.Identity;
+@using MasterThesisPlatform.Data;
+@model MasterThesisPlatform.Models.MongoDBGame
 @{
     ViewData["Title"] = "Create";
-
-}
-
-
-<h2>Create Game Details</h2>
-@{
     var list = ViewData["ListOfGames"] as List<MasterThesisPlatform.Models.MongoDBGameRooms>;
     var fileContents = ViewData["ContentsOfFile"] as List<MasterThesisPlatform.Models.MongoDBScript>;
 
@@ -22,140 +18,134 @@
         }
     }
 }
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
-<p>@path</p>
-
-<hr />
-<div class="palette-wrapper">
-    <div class="palette-categories">
-        @foreach (var item in categories)
-        {
-            //This is an example of how to use mongoDB to dynamically create the list and operations
-            //need methods for the actual code and a function that interprets the code or creates a file
-            <div class="palette-category-item" onclick="showPalette('@item')">
-                <p>@item</p>
-            </div>
-        }
-
-    </div>
-    <div class="palette-elements" id="paletteele">
-    </div>
-</div>
-
-
-
-<hr />
-<div class="building-canvas">
-    <canvas id="canvas"></canvas>
-</div>
-
-
-<script src="~/js/nomodulecomponentscollection.js"></script>
-<script src="~/js/gamerepresentation.js"></script>
-
-
-<script>
-    function decodeHtml(html) {
-        var txt = document.createElement("textarea");
-        txt.innerHTML = html;
-        return txt.value;
-    }
-    var objectsInCategory = [];
-    var buttonsForThis = [];
-</script>
-
-@foreach (var obj in fileContents)
+@if (SignInManager.IsSignedIn(User))
 {
-    if (obj.ComponentSuperName == null)
+    var user = await UserManager.GetUserAsync(User);
+    if (user.Role.Equals("Teacher"))
     {
+        <h2>Create Game Details</h2>
+
+        <p>@path</p>
+
+        <hr />
+        <div class="palette-wrapper">
+            <div class="palette-categories">
+                @foreach (var item in categories)
+                {
+                    //This is an example of how to use mongoDB to dynamically create the list and operations
+                    //need methods for the actual code and a function that interprets the code or creates a file
+                    <div class="palette-category-item" onclick="showPalette('@item')">
+                        <p>@item</p>
+                    </div>
+                }
+
+            </div>
+            <div class="palette-elements" id="paletteele">
+            </div>
+        </div>
+
+        <hr />
+        <div class="building-canvas">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <script src="~/js/nomodulecomponentscollection.js"></script>
+        <script src="~/js/gamerepresentation.js"></script>
+
         <script>
+            function decodeHtml(html) {
+                var txt = document.createElement("textarea");
+                txt.innerHTML = html;
+                return txt.value;
+            }
+            var objectsInCategory = [];
+            var buttonsForThis = [];
+        </script>
+
+        @foreach (var obj in fileContents)
+        {
+            if (obj.ComponentSuperName == null)
+            {
+                <script>
             objForList = { "Category": decodeHtml("@obj.Category"), "ComponentName": decodeHtml("@obj.ComponentName"), "ComponentContent": decodeHtml("@obj.ComponentContent") };
             objectsInCategory.push(objForList);
-        </script>
-    }
-    else
-    {
-        <script>
+                </script>
+            }
+            else
+            {
+                <script>
             objForList = { "Category": decodeHtml("@obj.Category"), "ComponentName": decodeHtml("@obj.ComponentName"), "ComponentContent": decodeHtml("@obj.ComponentContent"), "ComponentSuperName": decodeHtml("@obj.ComponentSuperName") };
             objectsInCategory.push(objForList);
+                </script>
+            }
+        }
+
+        <script>
+            function showPalette(category) {
+                document.getElementById("paletteele").innerHTML = "";
+                buttonsForThis = [];
+                for (var i = 0; i < objectsInCategory.length; i++) {
+                    if (objectsInCategory[i].Category == category) {
+                        buttonsForThis.push(objectsInCategory[i]);
+                    }
+                }
+                if (buttonsForThis[0] != null) {
+                    for (var i = 0; i < buttonsForThis.length; i++) {
+                        document.getElementById("paletteele").innerHTML += "<button id=" + "buttonAddToCanvas" + " onclick=" + "addObject(" + '"' + buttonsForThis[i].ComponentName + '"' + ")" + ">" + buttonsForThis[i].ComponentName + "</button>"
+                    }
+                }
+                return buttonsForThis;
+            }
+            function addObject(object) {
+                for (var i = 0; i < buttonsForThis.length; i++) {
+                    if (object == buttonsForThis[i].ComponentName) {
+                        createObject(buttonsForThis[i]);
+                    }
+                }
+            }
+            function getJsonObjects() {
+                var jsonCanvasObjects = JSON.stringify(getObjects());
+                console.log(jsonCanvasObjects);
+                document.getElementById("contentsOfCanvas").value = jsonCanvasObjects;
+            }
         </script>
+
+        <button onclick="getJsonObjects()" value="test"></button>
+
+        <div class="buildmode-optionsAndInfo">
+            <div class="buildmode-options">
+                <div class="buildmode-options-heading">
+                    <h5><u>Options:</u></h5>
+                </div>
+            </div>
+            <div class="buildmode-info">
+                <form asp-action="CreateMongoDbGameEntry">
+                    <textarea name="ContentsOfCanvas" id="contentsOfCanvas"></textarea>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Capacity" class="control-label"></label>
+                        <input asp-for="Capacity" class="form-control" />
+                        <span asp-validation-for="Capacity" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @section Scripts {
+            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        }
     }
 }
 
-<script>
-    function showPalette(category) {
-        document.getElementById("paletteele").innerHTML = "";
-        buttonsForThis = [];
-        for (var i = 0; i < objectsInCategory.length; i++) {
-            if (objectsInCategory[i].Category == category) {
-                buttonsForThis.push(objectsInCategory[i]);
-            }
-        }
-        if (buttonsForThis[0] != null) {
-            for (var i = 0; i < buttonsForThis.length; i++) {
-                document.getElementById("paletteele").innerHTML += "<button id=" + "buttonAddToCanvas" + " onclick=" + "addObject(" + '"' + buttonsForThis[i].ComponentName + '"' + ")" + ">" + buttonsForThis[i].ComponentName + "</button>"
-            }
-        }
-        return buttonsForThis;
-    }
-    function addObject(object) {
-        for (var i = 0; i < buttonsForThis.length; i++) {
-            if (object == buttonsForThis[i].ComponentName) {
-                createObject(buttonsForThis[i]);
-            }
-        }
-    }
-    function printObjects() {
-        console.log(JSON.stringify(getObjects()));
-    }
-</script>
 
-<button onclick="printObjects()" value="test"></button>
-
-<div class="buildmode-optionsAndInfo">
-    <div class="buildmode-options">
-        <div class="buildmode-options-heading">
-            <h5><u>Options:</u></h5>
-        </div>
-    </div>
-    <div class="buildmode-info">
-
-        
-
-        <form asp-action="CreateMongoDbGameEntry">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="GameId" class="control-label"></label>
-                <input asp-for="GameId" class="form-control" />
-                <span asp-validation-for="GameId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Author" class="control-label"></label>
-                <input asp-for="Author" class="form-control" />
-                <span asp-validation-for="Author" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Components" class="control-label"></label>
-                <input asp-for="Components" class="form-control" />
-                <span asp-validation-for="Components" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Capacity" class="control-label"></label>
-                <input asp-for="Capacity" class="form-control" />
-                <span asp-validation-for="Capacity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
-</div>
-</div>
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}  

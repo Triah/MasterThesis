@@ -55,11 +55,11 @@ namespace MasterThesisPlatform.Controllers
             List<MongoDBGameRooms> array = new List<MongoDBGameRooms>();
             List<MongoDBScript> scriptList = new List<MongoDBScript>();
             mongoDatabase = GetMongoDatabase();
-            foreach(MongoDBGameRooms room in mongoDatabase.GetCollection<MongoDBGameRooms>("GameRooms").Find(FilterDefinition<MongoDBGameRooms>.Empty).ToList())
+            foreach (MongoDBGameRooms room in mongoDatabase.GetCollection<MongoDBGameRooms>("GameRooms").Find(FilterDefinition<MongoDBGameRooms>.Empty).ToList())
             {
                 array.Add(room);
             }
-            foreach(MongoDBScript script in mongoDatabase.GetCollection<MongoDBScript>("Scripts").Find(FilterDefinition<MongoDBScript>.Empty).ToList())
+            foreach (MongoDBScript script in mongoDatabase.GetCollection<MongoDBScript>("Scripts").Find(FilterDefinition<MongoDBScript>.Empty).ToList())
             {
                 scriptList.Add(script);
             }
@@ -76,16 +76,30 @@ namespace MasterThesisPlatform.Controllers
             //Might want to hide the forms away, atleast some of them.
             try
             {
-                mongoDatabase = GetMongoDatabase();
-                mongoDatabase.GetCollection<MongoDBGame>("Games").InsertOne(game);
+                if (this._userManager.GetUserAsync(HttpContext.User) != null)
+                {
+                    var user = this._userManager.GetUserAsync(HttpContext.User);
+                    if (user.Result != null)
+                    {
+                        mongoDatabase = GetMongoDatabase();
 
-                Game g = new Game();
-                g.GameId = game.GameId;
-                g.Name = game.Name;
-                g.Author = game.Author;
-                g.Components = game.Components;
-                g.Capacity = game.Capacity;
-                g.SaveDetails();
+                        game.Id = MongoDB.Bson.ObjectId.GenerateNewId();
+                        game.GameId = Guid.NewGuid().GetHashCode();
+                        game.Author = user.Result.FirstName + " " + user.Result.LastName;
+                        game.Components = HttpContext.Request.Form["ContentsOfCanvas"].ToString();
+                        
+                        mongoDatabase.GetCollection<MongoDBGame>("Games").InsertOne(game);
+
+
+                        Game g = new Game();
+                        g.GameId = game.GameId;
+                        g.Name = game.Name;
+                        g.Author = game.Author;
+                        g.Components = game.Components;
+                        g.Capacity = game.Capacity;
+                        g.SaveDetails();
+                    }
+                }
             }
             catch (Exception e)
             {
