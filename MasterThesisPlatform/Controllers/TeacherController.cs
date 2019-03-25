@@ -90,7 +90,6 @@ namespace MasterThesisPlatform.Controllers
                         
                         mongoDatabase.GetCollection<MongoDBGame>("Games").InsertOne(game);
 
-
                         Game g = new Game();
                         g.GameId = game.GameId;
                         g.Name = game.Name;

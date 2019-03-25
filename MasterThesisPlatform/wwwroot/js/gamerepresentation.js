@@ -28,6 +28,15 @@ canvas.onmousemove = function (e) {
     }
 }
 
+canvas.addEventListener('click', function (e) {
+    for (var i = 0; i < canvasObjects.length; i++) {
+        if (canvasObjects[i].getCollisionArea(e)) {
+            var div = document.getElementById("buildmode-options-elements");
+            div.innerHTML = "<p>" + canvasObjects[i].object + "</p>";
+        }
+    }
+}, false)
+
 canvas.onmouseup = function (e) {
     //unlock item
     if (lockedItem != null) {
@@ -43,7 +52,7 @@ function getObjects() {
 var catAndName = object.Category.toLowerCase() + object.ComponentName.charAt(0).toLowerCase() + object.ComponentName.substr(1) 
 
 if(catAndName == "abstractcollisionShape.js") { 
-object = new abstractcollisionShape(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+object = new abstractcollisionShape(idIndex, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
@@ -52,7 +61,7 @@ object = new abstractcollisionShape(idIndex, null, null, null, null); //add defa
 canvasObjects.push(object);}
 
 else if(catAndName == "abstractshape.js") { 
-object = new abstractshape(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+object = new abstractshape(idIndex, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
@@ -61,7 +70,7 @@ object = new abstractshape(idIndex, null, null, null, null); //add defaulting va
 canvasObjects.push(object);}
 
 else if(catAndName == "shapessquare.js") { 
-object = new shapessquare(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+object = new shapessquare(idIndex, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
@@ -70,7 +79,7 @@ object = new shapessquare(idIndex, null, null, null, null); //add defaulting var
 canvasObjects.push(object);}
 
 else if(catAndName == "testssquare.js") { 
-object = new testssquare(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+object = new testssquare(idIndex, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
@@ -79,7 +88,7 @@ object = new testssquare(idIndex, null, null, null, null); //add defaulting vari
 canvasObjects.push(object);}
 
 else if(catAndName == "testsquare.js") { 
-object = new testsquare(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+object = new testsquare(idIndex, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
@@ -88,7 +97,7 @@ object = new testsquare(idIndex, null, null, null, null); //add defaulting varia
 canvasObjects.push(object);}
 
 else if(catAndName == "testcategorysquare.js") { 
-object = new testcategorysquare(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+object = new testcategorysquare(idIndex, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
@@ -97,7 +106,7 @@ object = new testcategorysquare(idIndex, null, null, null, null); //add defaulti
 canvasObjects.push(object);}
 
 else if(catAndName == "dwadwasquare.js") { 
-object = new dwadwasquare(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+object = new dwadwasquare(idIndex, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
@@ -106,7 +115,7 @@ object = new dwadwasquare(idIndex, null, null, null, null); //add defaulting var
 canvasObjects.push(object);}
 
 else if(catAndName == "dwadwacollisionShape.js") { 
-object = new dwadwacollisionShape(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+object = new dwadwacollisionShape(idIndex, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
@@ -115,7 +124,7 @@ object = new dwadwacollisionShape(idIndex, null, null, null, null); //add defaul
 canvasObjects.push(object);}
 
 else if(catAndName == "testscollisionShape.js") { 
-object = new testscollisionShape(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+object = new testscollisionShape(idIndex, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
@@ -124,7 +133,34 @@ object = new testscollisionShape(idIndex, null, null, null, null); //add default
 canvasObjects.push(object);}
 
 else if(catAndName == "abstractsquare.js") { 
-object = new abstractsquare(idIndex, null, null, null, null); //add defaulting variables so it can all be null
+object = new abstractsquare(idIndex, null, null, null, null);
+ object.setDefaultForUninstantiatedParameters(canvas)
+ object.setObjectName(catAndName.split(".")[0]);
+ object.draw(context)
+
+ idIndex++; 
+canvasObjects.push(object);}
+
+else if(catAndName == "shapescollisionShape.js") { 
+object = new shapescollisionShape(idIndex, null, null, null, null);
+ object.setDefaultForUninstantiatedParameters(canvas)
+ object.setObjectName(catAndName.split(".")[0]);
+ object.draw(context)
+
+ idIndex++; 
+canvasObjects.push(object);}
+
+else if(catAndName == "testcategoryshape.js") { 
+object = new testcategoryshape(idIndex, null, null, null, null);
+ object.setDefaultForUninstantiatedParameters(canvas)
+ object.setObjectName(catAndName.split(".")[0]);
+ object.draw(context)
+
+ idIndex++; 
+canvasObjects.push(object);}
+
+else if(catAndName == "testcollisionShape.js") { 
+object = new testcollisionShape(idIndex, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)

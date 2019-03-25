@@ -182,9 +182,9 @@ namespace MasterThesisPlatform.Util
                 List<string> filesInNoModuleComponents = new List<string>();
                 List<MongoDBScript> sortedScripts = new List<MongoDBScript>();
 
-                foreach(MongoDBScript s in scriptList)
+                foreach (MongoDBScript s in scriptList)
                 {
-                    if(s.ComponentSuperName == null)
+                    if (s.ComponentSuperName == null)
                     {
                         sortedScripts.Add(s);
                     }
@@ -202,7 +202,7 @@ namespace MasterThesisPlatform.Util
                 text += "'" + "use strict" + "';";
                 foreach (MongoDBScript s in sortedScripts)
                 {
-                    
+
                     string completeContentPostStrict = s.ComponentContent.Split(";")[1];
                     string[] completeContent = completeContentPostStrict.Split(" ");
                     string content = s.ComponentContent.Split("default")[1];
@@ -229,13 +229,15 @@ namespace MasterThesisPlatform.Util
                             }
                             if (allContentsOfFile[i].Equals("extends"))
                             {
-                                if (allContentsOfFile[i + 1].Contains("{")){
-                                    allContentsOfFile[i + 1] = nonmoduleExtension+" {";
-                                } else
+                                if (allContentsOfFile[i + 1].Contains("{"))
+                                {
+                                    allContentsOfFile[i + 1] = nonmoduleExtension + " {";
+                                }
+                                else
                                 {
                                     allContentsOfFile[i + 1] = nonmoduleExtension;
                                 }
-                                
+
                             }
                         }
 
@@ -249,7 +251,7 @@ namespace MasterThesisPlatform.Util
                 }
 
                 File.WriteAllText(filePath, text);
-                
+
             }
             else
             {
@@ -273,33 +275,66 @@ namespace MasterThesisPlatform.Util
                     scriptList.Add(script);
                 }
                 List<string> namesForMethodComparison = new List<string>();
-                foreach(MongoDBScript s in scriptList)
+                foreach (MongoDBScript s in scriptList)
                 {
                     namesForMethodComparison.Add(s.Category.ToLower() + Char.ToLowerInvariant(s.ComponentName[0]) + s.ComponentName.Substring(1));
                 }
                 string staticFileText = File.ReadAllText(staticFilePath);
 
-                //dynamic method for object creation
-                //TODO: add default parameter values as an obligatory method in the components
                 textForDynamicFunction = "\n function createObject(object){ \n" +
                     "var catAndName = object.Category.toLowerCase() + object.ComponentName.charAt(0).toLowerCase() + object.ComponentName.substr(1) \n";
-                for(int i = 0; i < namesForMethodComparison.Count; i++)
+                for (int i = 0; i < namesForMethodComparison.Count; i++)
                 {
                     if (i == 0)
                     {
-                        textForDynamicFunction += "\n" +"if(catAndName == " + '"' + namesForMethodComparison[i] + '"' + ") { \n" +
-                            "object = new " + namesForMethodComparison[i].Split(".")[0] + "(" + "idIndex" + ", null, null, null, null); //add defaulting variables so it can all be null";
+                        textForDynamicFunction += "\n" + "if(catAndName == " + '"' + namesForMethodComparison[i] + '"' + ") { \n" +
+                            "object = new " + namesForMethodComparison[i].Split(".")[0] + "(";
+                        string[] variables = scriptList[i].ComponentContent.Split("constructor(")[1].Split(")")[0].Split(",");
+                        for(int j = 0; j < variables.Length; j++)
+                        {
+                            if (j == 0)
+                            {
+                                textForDynamicFunction += "idIndex, ";
+                            }
+                            else if (j != 0 && j != variables.Length-1)
+                            {
+                                textForDynamicFunction += "null, ";
+                            }
+                            else
+                            {
+                                textForDynamicFunction += "null";
+                            }
+                        }
+                        textForDynamicFunction += ");";
                         textForDynamicFunction += "\n object.setDefaultForUninstantiatedParameters(canvas)";
                         textForDynamicFunction += "\n object.setObjectName(catAndName.split(" + '"' + "." + '"' + ")[0]);";
                         textForDynamicFunction += "\n object.draw(context)\n";
                         textForDynamicFunction += "\n idIndex++; \n";
                         textForDynamicFunction += "canvasObjects.push(object);}\n";
-                    } else
+                    }
+                    else
                     {
-                        textForDynamicFunction += "\n"+ "else if(catAndName == " + '"' + namesForMethodComparison[i] + '"' + ") { \n" +
-                                                        "object = new " + namesForMethodComparison[i].Split(".")[0] + "(" + "idIndex" + ", null, null, null, null); //add defaulting variables so it can all be null";
+                        textForDynamicFunction += "\n" + "else if(catAndName == " + '"' + namesForMethodComparison[i] + '"' + ") { \n" +
+                                                        "object = new " + namesForMethodComparison[i].Split(".")[0] + "(";
+                        string[] variables = scriptList[i].ComponentContent.Split("constructor(")[1].Split(")")[0].Split(",");
+                        for (int j = 0; j < variables.Length; j++)
+                        {
+                            if (j == 0)
+                            {
+                                textForDynamicFunction += "idIndex, ";
+                            }
+                            else if (j != 0 && j != variables.Length - 1)
+                            {
+                                textForDynamicFunction += "null, ";
+                            }
+                            else
+                            {
+                                textForDynamicFunction += "null";
+                            }
+                        }
+                        textForDynamicFunction += ");";
                         textForDynamicFunction += "\n object.setDefaultForUninstantiatedParameters(canvas)";
-                        textForDynamicFunction += "\n object.setObjectName(catAndName.split(" + '"' + "." + '"' +")[0]);";
+                        textForDynamicFunction += "\n object.setObjectName(catAndName.split(" + '"' + "." + '"' + ")[0]);";
                         textForDynamicFunction += "\n object.draw(context)\n";
                         textForDynamicFunction += "\n idIndex++; \n";
                         textForDynamicFunction += "canvasObjects.push(object);}\n";
@@ -308,13 +343,14 @@ namespace MasterThesisPlatform.Util
                 textForDynamicFunction += "\n }";
 
                 File.WriteAllText(filePath, staticFileText + textForDynamicFunction);
-            } else
+            }
+            else
             {
                 var file = File.Create(filePath);
                 file.Close();
                 createGameRepresentationFile();
             }
         }
-        
+
     }
 }

@@ -28,6 +28,15 @@ canvas.onmousemove = function (e) {
     }
 }
 
+canvas.addEventListener('click', function (e) {
+    for (var i = 0; i < canvasObjects.length; i++) {
+        if (canvasObjects[i].getCollisionArea(e)) {
+            var div = document.getElementById("buildmode-options-elements");
+            div.innerHTML = "<p>" + canvasObjects[i].object + "</p>";
+        }
+    }
+}, false)
+
 canvas.onmouseup = function (e) {
     //unlock item
     if (lockedItem != null) {

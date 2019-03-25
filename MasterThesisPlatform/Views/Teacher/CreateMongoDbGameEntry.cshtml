@@ -108,22 +108,21 @@
             }
             function getJsonObjects() {
                 var jsonCanvasObjects = JSON.stringify(getObjects());
-                console.log(jsonCanvasObjects);
                 document.getElementById("contentsOfCanvas").value = jsonCanvasObjects;
             }
         </script>
-
-        <button onclick="getJsonObjects()" value="test"></button>
 
         <div class="buildmode-optionsAndInfo">
             <div class="buildmode-options">
                 <div class="buildmode-options-heading">
                     <h5><u>Options:</u></h5>
                 </div>
+                <div class="buildmode-options-elements" id="buildmode-options-elements">
+
+                </div>
             </div>
             <div class="buildmode-info">
                 <form asp-action="CreateMongoDbGameEntry">
-                    <textarea name="ContentsOfCanvas" id="contentsOfCanvas"></textarea>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>
@@ -135,13 +134,14 @@
                         <input asp-for="Capacity" class="form-control" />
                         <span asp-validation-for="Capacity" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <textarea name="ContentsOfCanvas" id="contentsOfCanvas" style="visibility:hidden; height:1px; width:1px;"></textarea>
+                    <div class="form-group" onclick="getJsonObjects()">
                         <input type="submit" value="Create" class="btn btn-default" />
                     </div>
                 </form>
             </div>
         </div>
-
+        
         @section Scripts {
             @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
         }
