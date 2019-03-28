@@ -39,12 +39,12 @@ canvas.addEventListener('click', function (e) {
             //get and reset div
             var div = document.getElementById("buildmode-options-elements");
             div.innerHTML = "";
-
+            objectIdToAddTo = Object.values(canvasObjects[i])[0];
             for (var j = 0; j < Object.keys(canvasObjects[i]).length; j++) {
                 //Oh boy this is unreadable as fuck
                 if (typeof Object.values(canvasObjects[i])[j] === 'object') {
                     objectVariableToAddTo = Object.keys(canvasObjects[i])[j];
-                    objectIdToAddTo = Object.values(canvasObjects[i])[0];
+                    
                     div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + Object.keys(canvasObjects[i])[j] + "</u></strong></p>"
                     for (var k = 0; k < Object.values(canvasObjects[i])[j].length; k++) {
                         div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "id=" + '"' + "objectvalue" + k + '"' + "><p>"
@@ -76,11 +76,57 @@ canvas.addEventListener('click', function (e) {
                     div.innerHTML += "<hr style=" + '"' + "height:1px;border:none;color:#333;background-color:#333;" + '"' + ">";
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'boolean') {
                     console.log("bool detected");
+                    console.log(Object.keys(canvasObjects[i])[j]);
+                    //colliding is not supposed to be changed by this
+                    if (Object.keys(canvasObjects[i])[j] != "colliding") {
+                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + "toggle option" + "</u></strong></p>";
+                        if (Object.values(canvasObjects[i])[j] == true) {
+                            div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">" +
+                                "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + '"' +
+                                " style=" + '"' + "margin-right: 5px;" + '"' +
+                                " type=" + '"' + "checkbox" + '"' + "name=" + '"' + Object.keys(canvasObjects[i])[j] + '"' +
+                                "onclick=" + '"' + "toggleBool(" + "'" + Object.keys(canvasObjects[i])[j] + "'" + ")" + '"' +
+                                " checked=" + '"' + "true" + '"' + ">"
+                                + Object.keys(canvasObjects[i])[j] +
+                                "</div>";
+                        } else {
+                            div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">" +
+                                "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + '"' +
+                                " style=" + '"' + "margin-right: 5px;" + '"' +
+                                " type=" + '"' + "checkbox" + '"' + "name=" + '"' + Object.keys(canvasObjects[i])[j] + '"' +
+                                "onclick=" + '"' + "toggleBool("+ "'" +Object.keys(canvasObjects[i])[j] + "'" + ")" + '"' + ">"
+                                + Object.keys(canvasObjects[i])[j] +
+                                "</div>";
+                        }
+                        div.innerHTML += "<hr style=" + '"' + "height:1px;border:none;color:#333;background-color:#333;" + '"' + ">";
+                    }
+                    console.log(Object.values(canvasObjects[i])[j]);
+                } else if (typeof Object.values(canvasObjects[i])[j] === 'string') {
+                    console.log("string found");
+                    console.log(Object.values(canvasObjects[i])[j]);
+                } else if (typeof Object.values(canvasObjects[i])[j] === 'number') {
+                    console.log("number found");
+                    console.log(Object.values(canvasObjects[i])[j]);
                 }
             }
         }
     }
 }, false)
+
+function toggleBool(bool) {
+    for (var i = 0; i < canvasObjects.length; i++) {
+        if (canvasObjects[i].id == objectIdToAddTo) {
+            for (var j = 0; j < Object.keys(canvasObjects[i]).length; j++) {
+                if (Object.keys(canvasObjects[i])[j] == bool) {
+                    //Reference and value types are wierd so we do this by talking to the interpreter
+                    eval("canvasObjects[i]."+bool+" = !canvasObjects[i]."+bool);
+                    eval("console.log(canvasObjects[i]." + bool + ");");
+                }
+            }
+        }
+    }
+    
+}
 
 function addToObjectValues(listOfValues) {
     if (objectVariableToAddTo != null && objectIdToAddTo != null) {
@@ -129,33 +175,30 @@ function addToObjectValues(listOfValues) {
 
                             }
                             if (lowestCorner != null && secondLowestCorner != null) {
-                                console.log(lowestCorner);
-                                console.log(secondLowestCorner);
                                 if (lowestCorner == Object.values(canvasObjects[i])[j].length - 1 && secondLowestCorner == 0) {
-                                    console.log("not expected")
                                     Object.values(canvasObjects[i])[j].push(newObjectToAdd);
                                 } else if (secondLowestCorner == Object.values(canvasObjects[i])[j].length - 1 && lowestCorner == 0) {
-                                    console.log("not at all expected");
                                     Object.values(canvasObjects[i])[j].push(newObjectToAdd);
                                 } else if (secondLowestCorner > lowestCorner) {
-                                    console.log("hest")
                                     Object.values(canvasObjects[i])[j].splice(secondLowestCorner, 0, newObjectToAdd);
-                                }
-                                else if (lowestCorner < secondLowestCorner) {
-                                    console.log("lowest")
+                                } else if (lowestCorner < secondLowestCorner) {
                                     Object.values(canvasObjects[i])[j].splice(secondLowestCorner, 0, newObjectToAdd);
                                 } else if (lowestCorner > secondLowestCorner) {
                                     Object.values(canvasObjects[i])[j].splice(lowestCorner, 0, newObjectToAdd);
                                 }
-                                
+
                             }
-                            
+
                         }
 
                     }
                 }
             }
-            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < canvasObjects.length; i++) {
             canvasObjects[i].draw(context);
         }
 
