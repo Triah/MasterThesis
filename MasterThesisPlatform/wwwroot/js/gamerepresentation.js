@@ -114,21 +114,44 @@ canvas.addEventListener('click', function (e) {
                         div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">"
                             + "<button onclick=" + '"' + "changeText(" + "'" + Object.keys(canvasObjects[i])[j] + "'" + ")" + '"' + ">"
                             + "Save Text </button></div>"
-                        console.log("string found");
-                        console.log(Object.values(canvasObjects[i])[j]);
+                        div.innerHTML += "<hr style=" + '"' + "height:1px;border:none;color:#333;background-color:#333;" + '"' + ">";
                     }
 
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'number') {
                     if (Object.keys(canvasObjects[i])[j] != "id") {
-                        console.log("number found");
-                        console.log(Object.values(canvasObjects[i])[j]);
+                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + "number option" + "</u></strong></p>";
+                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "> current number: <u>" + Object.values(canvasObjects[i])[j] + "</u> </p>";
+                        div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + "> "
+                            + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
+                            + "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + Object.values(canvasObjects[i])[j] + '"'
+                            + " style=" + '"' + "text-align:center;" + '"' + " type=" + '"' + "text" + '"' +
+                            " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + '"'
+                            + " /> "
+                            + "</form></div>"
+                        div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">"
+                            + "<button onclick=" + '"' + "changeNumber(" + "'" + Object.keys(canvasObjects[i])[j] + "'" + ")" + '"' + ">"
+                            + "Save Text </button></div>"
+                        div.innerHTML += "<hr style=" + '"' + "height:1px;border:none;color:#333;background-color:#333;" + '"' + ">";
                     }
-
                 }
             }
         }
     }
 }, false)
+
+function changeNumber(value) {
+    for (var i = 0; i < canvasObjects.length; i++) {
+        if (canvasObjects[i].id == objectIdToAddTo) {
+            for (var j = 0; j < Object.keys(canvasObjects[i]).length; j++) {
+                if (Object.keys(canvasObjects[i])[j] == value) {
+                    var textField = document.getElementById(value + Object.values(canvasObjects[i])[j]);
+                    //Reference and value types are wierd so we do this by talking to the interpreter
+                    eval("canvasObjects[i]." + value + " = " + parseInt(textField.value));
+                }
+            }
+        }
+    }
+}
 
 function changeText(value) {
     for (var i = 0; i < canvasObjects.length; i++) {
