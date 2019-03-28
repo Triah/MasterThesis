@@ -57,12 +57,12 @@ canvas.addEventListener('click', function (e) {
                                 div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + "> "
                                     + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
                                     + "<input id=" + '"' + Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k])[n] +
-                                    (Object.values(canvasObjects[i])[j].length + 1) +'"' +
+                                    (Object.values(canvasObjects[i])[j].length + 1) + '"' +
                                     " style=" + '"' + "text-align:center;" + '"' + " type=" + '"' + "text" + '"' +
                                     " placeholder=" + '"' + Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k])[n] +
                                     (Object.values(canvasObjects[i])[j].length + 1) + " of type: "
                                     + typeof Object.values(Object.values(Object.values(canvasObjects[i])[j])[k])[n] + '"'
-                                    + "onchange=" + '"' + "newValuesOfObject[" + n +"]=" + "this.value;" + '"' 
+                                    + "onchange=" + '"' + "newValuesOfObject[" + n + "]=" + "this.value;" + '"'
                                     + " /> "
                                     + "</form></div>"
                             }
@@ -89,26 +89,76 @@ function addToObjectValues(listOfValues) {
             if (Object.is(parseInt(listOfValues[i]), NaN)) {
                 newObjectToAdd[keysForObject[i]] = listOfValues[i];
             } else {
-                //special case for bounds
                 newObjectToAdd[keysForObject[i]] = parseInt(listOfValues[i]);
             }
-            
+
         }
-        //make a special case for bounds which ensures that whenever a new bound is put in it is done to inbetween the nearest points
-        //this can be done by using the euclidian distance i guess
         for (var i = 0; i < canvasObjects.length; i++) {
             if (canvasObjects[i].id == objectIdToAddTo) {
                 for (var j = 0; j < Object.keys(canvasObjects[i]).length; j++) {
                     if (Object.keys(canvasObjects[i])[j] == objectVariableToAddTo) {
-                        Object.values(canvasObjects[i])[j][Object.values(canvasObjects[i])[j].length] = newObjectToAdd;
-                        console.log(canvasObjects[i]);
+                        //special case for bounds as they needed to be more intuitive and the position actually matters alot
+                        if (Object.keys(canvasObjects[i])[j] == "bounds") {
+                            var currentLowestDist = null;
+                            var currentSecondLowestDist = null;
+                            var lowestCorner = null;
+                            var secondLowestCorner = null;
+                            for (var k = 0; k < Object.values(canvasObjects[i])[j].length; k++) {
+                                var currentDist = Math.hypot(Object.values(Object.values(canvasObjects[i])[j])[k].x - newObjectToAdd.x, Object.values(Object.values(canvasObjects[i])[j])[k].y - newObjectToAdd.y);
+                                if (currentLowestDist != null && currentSecondLowestDist != null) {
+                                    if (currentDist < currentSecondLowestDist) {
+                                        if (currentDist < currentLowestDist) {
+                                            currentSecondLowestDist = currentLowestDist;
+                                            secondLowestCorner = lowestCorner;
+                                            currentLowestDist = currentDist;
+                                            lowestCorner = k;
+                                        } else {
+                                            currentSecondLowestDist = currentDist;
+                                            secondLowestCorner = k;
+                                        }
+                                    }
+                                }
+                                if (currentSecondLowestDist == null && currentLowestDist != null) {
+                                    currentSecondLowestDist = currentDist;
+                                    secondLowestCorner = k;
+                                }
+                                if (currentLowestDist == null) {
+                                    currentLowestDist = currentDist;
+                                    lowestCorner = k;
+                                }
+
+                            }
+                            if (lowestCorner != null && secondLowestCorner != null) {
+                                console.log(lowestCorner);
+                                console.log(secondLowestCorner);
+                                if (lowestCorner == Object.values(canvasObjects[i])[j].length - 1 && secondLowestCorner == 0) {
+                                    console.log("not expected")
+                                    Object.values(canvasObjects[i])[j].push(newObjectToAdd);
+                                } else if (secondLowestCorner == Object.values(canvasObjects[i])[j].length - 1 && lowestCorner == 0) {
+                                    console.log("not at all expected");
+                                    Object.values(canvasObjects[i])[j].push(newObjectToAdd);
+                                } else if (secondLowestCorner > lowestCorner) {
+                                    console.log("hest")
+                                    Object.values(canvasObjects[i])[j].splice(secondLowestCorner, 0, newObjectToAdd);
+                                }
+                                else if (lowestCorner < secondLowestCorner) {
+                                    console.log("lowest")
+                                    Object.values(canvasObjects[i])[j].splice(secondLowestCorner, 0, newObjectToAdd);
+                                } else if (lowestCorner > secondLowestCorner) {
+                                    Object.values(canvasObjects[i])[j].splice(lowestCorner, 0, newObjectToAdd);
+                                }
+                                
+                            }
+                            
+                        }
+
                     }
                 }
             }
             context.clearRect(0, 0, canvas.width, canvas.height);
             canvasObjects[i].draw(context);
         }
-        
+
         //set object name to null again
         keysForObject = []
         objectVariableToAddTo = null;
