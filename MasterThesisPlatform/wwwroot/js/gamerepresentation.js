@@ -44,7 +44,7 @@ canvas.addEventListener('click', function (e) {
                 //Oh boy this is unreadable as fuck
                 if (typeof Object.values(canvasObjects[i])[j] === 'object') {
                     objectVariableToAddTo = Object.keys(canvasObjects[i])[j];
-                    
+
                     div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + Object.keys(canvasObjects[i])[j] + "</u></strong></p>"
                     for (var k = 0; k < Object.values(canvasObjects[i])[j].length; k++) {
                         div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "id=" + '"' + "objectvalue" + k + '"' + "><p>"
@@ -75,8 +75,6 @@ canvas.addEventListener('click', function (e) {
                     //Line separating the values
                     div.innerHTML += "<hr style=" + '"' + "height:1px;border:none;color:#333;background-color:#333;" + '"' + ">";
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'boolean') {
-                    console.log("bool detected");
-                    console.log(Object.keys(canvasObjects[i])[j]);
                     //colliding is not supposed to be changed by this
                     if (Object.keys(canvasObjects[i])[j] != "colliding") {
                         div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + "toggle option" + "</u></strong></p>";
@@ -94,19 +92,24 @@ canvas.addEventListener('click', function (e) {
                                 "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + '"' +
                                 " style=" + '"' + "margin-right: 5px;" + '"' +
                                 " type=" + '"' + "checkbox" + '"' + "name=" + '"' + Object.keys(canvasObjects[i])[j] + '"' +
-                                "onclick=" + '"' + "toggleBool("+ "'" +Object.keys(canvasObjects[i])[j] + "'" + ")" + '"' + ">"
+                                "onclick=" + '"' + "toggleBool(" + "'" + Object.keys(canvasObjects[i])[j] + "'" + ")" + '"' + ">"
                                 + Object.keys(canvasObjects[i])[j] +
                                 "</div>";
                         }
                         div.innerHTML += "<hr style=" + '"' + "height:1px;border:none;color:#333;background-color:#333;" + '"' + ">";
                     }
-                    console.log(Object.values(canvasObjects[i])[j]);
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'string') {
-                    console.log("string found");
-                    console.log(Object.values(canvasObjects[i])[j]);
+                    if (Object.keys(canvasObjects[i])[j] != "object") {
+                        console.log("string found");
+                        console.log(Object.values(canvasObjects[i])[j]);
+                    }
+
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'number') {
-                    console.log("number found");
-                    console.log(Object.values(canvasObjects[i])[j]);
+                    if (Object.keys(canvasObjects[i])[j] != "id") {
+                        console.log("number found");
+                        console.log(Object.values(canvasObjects[i])[j]);
+                    }
+
                 }
             }
         }
@@ -119,13 +122,12 @@ function toggleBool(bool) {
             for (var j = 0; j < Object.keys(canvasObjects[i]).length; j++) {
                 if (Object.keys(canvasObjects[i])[j] == bool) {
                     //Reference and value types are wierd so we do this by talking to the interpreter
-                    eval("canvasObjects[i]."+bool+" = !canvasObjects[i]."+bool);
-                    eval("console.log(canvasObjects[i]." + bool + ");");
+                    eval("canvasObjects[i]." + bool + " = !canvasObjects[i]." + bool);
                 }
             }
         }
     }
-    
+
 }
 
 function addToObjectValues(listOfValues) {
