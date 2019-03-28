@@ -96,6 +96,20 @@ canvas.addEventListener('click', function (e) {
                     }
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'string') {
                     if (Object.keys(canvasObjects[i])[j] != "object") {
+                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + "text option" + "</u></strong></p>";
+                        if (Object.values(canvasObjects[i])[j] != "") {
+                            div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "> current text: <u>" + Object.values(canvasObjects[i])[j] + "</u> </p>";
+                        }
+                        div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + "> "
+                            + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
+                            + "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + Object.values(canvasObjects[i])[j] + '"'
+                            + " style=" + '"' + "text-align:center;" + '"' + " type=" + '"' + "text" + '"' +
+                            " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + '"'
+                            + " /> "
+                            + "</form></div>"
+                        div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">"
+                            + "<button onclick=" + '"' + "changeText(" + "'" + Object.keys(canvasObjects[i])[j] + "'" + ")" + '"' + ">"
+                            + "Save Text </button></div>"
                         console.log("string found");
                         console.log(Object.values(canvasObjects[i])[j]);
                     }
@@ -111,6 +125,20 @@ canvas.addEventListener('click', function (e) {
         }
     }
 }, false)
+
+function changeText(value) {
+    for (var i = 0; i < canvasObjects.length; i++) {
+        if (canvasObjects[i].id == objectIdToAddTo) {
+            for (var j = 0; j < Object.keys(canvasObjects[i]).length; j++) {
+                if (Object.keys(canvasObjects[i])[j] == value) {
+                    var textField = document.getElementById(value + Object.values(canvasObjects[i])[j]);
+                    //Reference and value types are wierd so we do this by talking to the interpreter
+                    eval("canvasObjects[i]." + value + " = " + '"' + textField.value + '"');
+                }
+            }
+        }
+    }
+}
 
 function toggleBool(bool) {
     for (var i = 0; i < canvasObjects.length; i++) {
