@@ -65,7 +65,7 @@ export default class Shape {
         return vectors;
     }
 
-    process(e){
+    process(e,objects){
         //TODO
     }
 
@@ -74,10 +74,6 @@ export default class Shape {
         if(this.color != ""){
             context.fillStyle = this.color;
         }
-        if(this.text != "" && this.textVisible){
-            context.font = "22px Arial";
-            context.strokeText(this.text, this.getCenter().x, this.getCenter().y);
-        }
         context.moveTo(this.getBounds()[0].x, this.getBounds()[0].y);
         for (var i = 1; i < this.getBounds().length; i++) {
             context.lineTo(this.getBounds()[i].x, this.getBounds()[i].y);
@@ -85,6 +81,10 @@ export default class Shape {
         context.strokeStyle = "#000000"
         context.closePath();
         context.fill();
+        if (this.text != "" && this.textVisible) {
+            context.font = "12px Arial";
+            context.strokeText(this.text, this.bounds[0].x+10, this.getCenter().y);
+        }
         context.stroke();
     }
 

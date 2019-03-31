@@ -41,37 +41,39 @@ canvas.addEventListener('click', function (e) {
             objectIdToAddTo = Object.values(canvasObjects[i])[0];
             for (var j = 0; j < Object.keys(canvasObjects[i]).length; j++) {
                 if (typeof Object.values(canvasObjects[i])[j] === 'object') {
-                    objectVariableToAddTo = Object.keys(canvasObjects[i])[j];
+                    if (Object.keys(canvasObjects[i])[j] != "privateVariables") {
+                        objectVariableToAddTo = Object.keys(canvasObjects[i])[j];
 
-                    div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + Object.keys(canvasObjects[i])[j] + "</u></strong></p>"
-                    for (var k = 0; k < Object.values(canvasObjects[i])[j].length; k++) {
-                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "id=" + '"' + "objectvalue" + k + '"' + "><p>"
-                        for (var n = 0; n < Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k]).length; n++) {
-                            document.getElementById("objectvalue" + k).innerHTML +=
-                                Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k])[n] + (k + 1) + ": " +
-                                Object.values(Object.values(Object.values(canvasObjects[i])[j])[k])[n] + "<br>";
-                            if (k == Object.values(canvasObjects[i])[j].length - 1) {
-                                keysForObject[n] = Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k])[n];
-                                div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + "> "
-                                    + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
-                                    + "<input id=" + '"' + Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k])[n] +
-                                    (Object.values(canvasObjects[i])[j].length + 1) + '"' +
-                                    " style=" + '"' + "text-align:center;" + '"' + " type=" + '"' + "text" + '"' +
-                                    " placeholder=" + '"' + Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k])[n] +
-                                    (Object.values(canvasObjects[i])[j].length + 1) + " of type: "
-                                    + typeof Object.values(Object.values(Object.values(canvasObjects[i])[j])[k])[n] + '"'
-                                    + "onchange=" + '"' + "newValuesOfObject[" + n + "]=" + "this.value;" + '"'
-                                    + " /> "
-                                    + "</form></div>"
+                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + Object.keys(canvasObjects[i])[j] + "</u></strong></p>"
+                        for (var k = 0; k < Object.values(canvasObjects[i])[j].length; k++) {
+                            div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "id=" + '"' + "objectvalue" + k + '"' + "><p>"
+                            for (var n = 0; n < Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k]).length; n++) {
+                                document.getElementById("objectvalue" + k).innerHTML +=
+                                    Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k])[n] + (k + 1) + ": " +
+                                    Object.values(Object.values(Object.values(canvasObjects[i])[j])[k])[n] + "<br>";
+                                if (k == Object.values(canvasObjects[i])[j].length - 1) {
+                                    keysForObject[n] = Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k])[n];
+                                    div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + "> "
+                                        + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
+                                        + "<input id=" + '"' + Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k])[n] +
+                                        (Object.values(canvasObjects[i])[j].length + 1) + '"' +
+                                        " style=" + '"' + "text-align:center;" + '"' + " type=" + '"' + "text" + '"' +
+                                        " placeholder=" + '"' + Object.keys(Object.values(Object.values(canvasObjects[i])[j])[k])[n] +
+                                        (Object.values(canvasObjects[i])[j].length + 1) + " of type: "
+                                        + typeof Object.values(Object.values(Object.values(canvasObjects[i])[j])[k])[n] + '"'
+                                        + "onchange=" + '"' + "newValuesOfObject[" + n + "]=" + "this.value;" + '"'
+                                        + " /> "
+                                        + "</form></div>"
+                                }
                             }
                         }
-                    }
-                    div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">"
-                        + "<button onclick=" + '"' + "addToObjectValues(newValuesOfObject)" + '"' + ">"
-                        + "Add New Entry </button></div>"
+                        div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">"
+                            + "<button onclick=" + '"' + "addToObjectValues(newValuesOfObject)" + '"' + ">"
+                            + "Add New Entry </button></div>"
 
-                    //Line separating the values
-                    div.innerHTML += "<hr style=" + '"' + "height:1px;border:none;color:#333;background-color:#333;" + '"' + ">";
+                        //Line separating the values
+                        div.innerHTML += "<hr style=" + '"' + "height:1px;border:none;color:#333;background-color:#333;" + '"' + ">";
+                    }
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'boolean') {
                     //colliding is not supposed to be changed by this
                     if (Object.keys(canvasObjects[i])[j] != "colliding") {
@@ -98,7 +100,7 @@ canvas.addEventListener('click', function (e) {
                     }
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'string') {
                     if (Object.keys(canvasObjects[i])[j] != "object") {
-                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + Object.keys(canvasObjects[i])[j] + " option" + "</u></strong></p>";
+                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + "text option" + "</u></strong></p>";
                         if (Object.values(canvasObjects[i])[j] != "") {
                             div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "> current text: <u>" + Object.values(canvasObjects[i])[j] + "</u> </p>";
                         }
@@ -121,7 +123,7 @@ canvas.addEventListener('click', function (e) {
                         div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "> current number: <u>" + Object.values(canvasObjects[i])[j] + "</u> </p>";
                         div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + "> "
                             + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
-                            + "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + Object.values(canvasObjects[i])[j] + '"' +
+                            + "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + Object.values(canvasObjects[i])[j] + '"'
                             + " style=" + '"' + "text-align:center;" + '"' + " type=" + '"' + "text" + '"' +
                             " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + " of type:" + typeof Object.values(canvasObjects[i])[j] + '"'
                             + " /> "
@@ -185,6 +187,8 @@ function toggleBool(bool) {
     }
 
 }
+
+
 
 
 function addToObjectValues(listOfValues) {
@@ -298,7 +302,7 @@ object = new shapessquare(idIndex, null, null, null, null, null, null);
 canvasObjects.push(object);}
 
 else if(catAndName == "memorymemoryCard.js") { 
-object = new memorymemoryCard(idIndex, null, null, null, null, null, null);
+object = new memorymemoryCard(idIndex, null, null, null, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
