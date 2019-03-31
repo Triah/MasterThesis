@@ -1,12 +1,15 @@
 'use strict';
 export default class Shape {
-    constructor(id, bounds, moveAble, collideAble, targetAble) {
+    constructor(id, bounds, moveAble, targetAble, color, text, textVisible) {
         this.id = id;
-        this.bounds = bounds;
         this.colliding;
+        this.color = color;
+        this.text = text;
+        this.textVisible = textVisible;
         this.moveAble = moveAble;
-        this.collideAble = collideAble;
         this.targetAble = targetAble;
+        this.object = null;
+        this.bounds = bounds;
     }
 
     setObjectName(object) {
@@ -24,13 +27,18 @@ export default class Shape {
         if(this.moveAble == null){
             this.moveAble = true;
         }
-        if(this.collideAble == null){
-            this.collideAble = false;
-        }
         if(this.targetAble == null){
             this.targetAble = false;
         }
-        console.log(this)
+        if(this.color == null){
+            this.color = "white";
+        }
+        if(this.text == null){
+            this.text = "";
+        }
+        if(this.textVisible == null){
+            this.textVisible = false;
+        }
     }
 
     getBounds() {
@@ -57,14 +65,26 @@ export default class Shape {
         return vectors;
     }
 
+    process(e){
+        //TODO
+    }
+
     draw(context) {
         context.beginPath();
+        if(this.color != ""){
+            context.fillStyle = this.color;
+        }
+        if(this.text != "" && this.textVisible){
+            context.font = "22px Arial";
+            context.strokeText(this.text, this.getCenter().x, this.getCenter().y);
+        }
         context.moveTo(this.getBounds()[0].x, this.getBounds()[0].y);
         for (var i = 1; i < this.getBounds().length; i++) {
             context.lineTo(this.getBounds()[i].x, this.getBounds()[i].y);
         }
         context.strokeStyle = "#000000"
         context.closePath();
+        context.fill();
         context.stroke();
     }
 

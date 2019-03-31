@@ -31,8 +31,7 @@ canvas.onmousemove = function (e) {
     }
 }
 
-
-//This method is still in progress, its pretty difficult to get right though so might be a while till its done
+//Dynamically create options panel with the numberof options available to the specific component.
 canvas.addEventListener('click', function (e) {
     for (var i = 0; i < canvasObjects.length; i++) {
         if (canvasObjects[i].getCollisionArea(e)) {
@@ -41,7 +40,6 @@ canvas.addEventListener('click', function (e) {
             div.innerHTML = "";
             objectIdToAddTo = Object.values(canvasObjects[i])[0];
             for (var j = 0; j < Object.keys(canvasObjects[i]).length; j++) {
-                //Oh boy this is unreadable as fuck
                 if (typeof Object.values(canvasObjects[i])[j] === 'object') {
                     objectVariableToAddTo = Object.keys(canvasObjects[i])[j];
 
@@ -100,7 +98,7 @@ canvas.addEventListener('click', function (e) {
                     }
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'string') {
                     if (Object.keys(canvasObjects[i])[j] != "object") {
-                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + "text option" + "</u></strong></p>";
+                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + Object.keys(canvasObjects[i])[j] + " option" + "</u></strong></p>";
                         if (Object.values(canvasObjects[i])[j] != "") {
                             div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "> current text: <u>" + Object.values(canvasObjects[i])[j] + "</u> </p>";
                         }
@@ -108,7 +106,7 @@ canvas.addEventListener('click', function (e) {
                             + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
                             + "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + Object.values(canvasObjects[i])[j] + '"'
                             + " style=" + '"' + "text-align:center;" + '"' + " type=" + '"' + "text" + '"' +
-                            " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + '"'
+                            " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + " of type:" + typeof Object.values(canvasObjects[i])[j] + '"'
                             + " /> "
                             + "</form></div>"
                         div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">"
@@ -123,9 +121,9 @@ canvas.addEventListener('click', function (e) {
                         div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "> current number: <u>" + Object.values(canvasObjects[i])[j] + "</u> </p>";
                         div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + "> "
                             + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
-                            + "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + Object.values(canvasObjects[i])[j] + '"'
+                            + "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + Object.values(canvasObjects[i])[j] + '"' +
                             + " style=" + '"' + "text-align:center;" + '"' + " type=" + '"' + "text" + '"' +
-                            " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + '"'
+                            " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + " of type:" + typeof Object.values(canvasObjects[i])[j] + '"'
                             + " /> "
                             + "</form></div>"
                         div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">"
@@ -150,6 +148,8 @@ function changeNumber(value) {
                 }
             }
         }
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        canvasObjects[i].draw(context);
     }
 }
 
@@ -164,6 +164,8 @@ function changeText(value) {
                 }
             }
         }
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        canvasObjects[i].draw(context);
     }
 }
 
@@ -174,12 +176,16 @@ function toggleBool(bool) {
                 if (Object.keys(canvasObjects[i])[j] == bool) {
                     //Reference and value types are wierd so we do this by talking to the interpreter
                     eval("canvasObjects[i]." + bool + " = !canvasObjects[i]." + bool);
+                    eval("console.log(canvasObjects[i]." + bool + ");");
                 }
             }
         }
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        canvasObjects[i].draw(context);
     }
 
 }
+
 
 function addToObjectValues(listOfValues) {
     if (objectVariableToAddTo != null && objectIdToAddTo != null) {
@@ -242,18 +248,12 @@ function addToObjectValues(listOfValues) {
 
                             }
 
-                        } else {
-                            Object.values(canvasObjects[i])[j][Object.values(canvasObjects[i])[j].length] = newObjectToAdd;
                         }
 
                     }
                 }
             }
-        }
-
-
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        for (var i = 0; i < canvasObjects.length; i++) {
+            context.clearRect(0, 0, canvas.width, canvas.height);
             canvasObjects[i].draw(context);
         }
 
@@ -276,139 +276,34 @@ canvas.onmouseup = function (e) {
 function getObjects() {
     return canvasObjects;
 }
+ function createObject(object){ 
+var catAndName = object.Category.toLowerCase() + object.ComponentName.charAt(0).toLowerCase() + object.ComponentName.substr(1) 
 
+if(catAndName == "abstractshape.js") { 
+object = new abstractshape(idIndex, null, null, null, null, null, null);
+ object.setDefaultForUninstantiatedParameters(canvas)
+ object.setObjectName(catAndName.split(".")[0]);
+ object.draw(context)
 
-function createObject(object) {
-    var catAndName = object.Category.toLowerCase() + object.ComponentName.charAt(0).toLowerCase() + object.ComponentName.substr(1)
+ idIndex++; 
+canvasObjects.push(object);}
 
-    if (catAndName == "abstractcollisionShape.js") {
-        object = new abstractcollisionShape(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
+else if(catAndName == "shapessquare.js") { 
+object = new shapessquare(idIndex, null, null, null, null, null, null);
+ object.setDefaultForUninstantiatedParameters(canvas)
+ object.setObjectName(catAndName.split(".")[0]);
+ object.draw(context)
 
-        idIndex++;
-        canvasObjects.push(object);
-    }
+ idIndex++; 
+canvasObjects.push(object);}
 
-    else if (catAndName == "abstractshape.js") {
-        object = new abstractshape(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
+else if(catAndName == "memorymemoryCard.js") { 
+object = new memorymemoryCard(idIndex, null, null, null, null, null, null);
+ object.setDefaultForUninstantiatedParameters(canvas)
+ object.setObjectName(catAndName.split(".")[0]);
+ object.draw(context)
 
-        idIndex++;
-        canvasObjects.push(object);
-    }
+ idIndex++; 
+canvasObjects.push(object);}
 
-    else if (catAndName == "shapessquare.js") {
-        object = new shapessquare(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-    else if (catAndName == "testssquare.js") {
-        object = new testssquare(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-    else if (catAndName == "testsquare.js") {
-        object = new testsquare(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-    else if (catAndName == "testcategorysquare.js") {
-        object = new testcategorysquare(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-    else if (catAndName == "dwadwasquare.js") {
-        object = new dwadwasquare(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-    else if (catAndName == "dwadwacollisionShape.js") {
-        object = new dwadwacollisionShape(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-    else if (catAndName == "testscollisionShape.js") {
-        object = new testscollisionShape(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-    else if (catAndName == "abstractsquare.js") {
-        object = new abstractsquare(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-    else if (catAndName == "shapescollisionShape.js") {
-        object = new shapescollisionShape(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-    else if (catAndName == "testcategoryshape.js") {
-        object = new testcategoryshape(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-    else if (catAndName == "testcollisionShape.js") {
-        object = new testcollisionShape(idIndex, null, null, null, null);
-        object.setDefaultForUninstantiatedParameters(canvas)
-        object.setObjectName(catAndName.split(".")[0]);
-        object.draw(context)
-
-        idIndex++;
-        canvasObjects.push(object);
-    }
-
-}
+ }

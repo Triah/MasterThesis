@@ -6,6 +6,9 @@ var canvasObjects = []
 var lockedItem = null;
 var itemIsLocked = false;
 var idIndex = 0;
+var objectVariableToAddTo = null;
+var objectIdToAddTo = null;
+var keysForObject = [];
 
 canvas.onmousedown = function (e) {
     for (var i = 0; i < canvasObjects.length; i++) {
@@ -28,7 +31,7 @@ canvas.onmousemove = function (e) {
     }
 }
 
-//This method is still in progress, its pretty difficult to get right though so might be a while till its done
+//Dynamically create options panel with the numberof options available to the specific component.
 canvas.addEventListener('click', function (e) {
     for (var i = 0; i < canvasObjects.length; i++) {
         if (canvasObjects[i].getCollisionArea(e)) {
@@ -37,7 +40,6 @@ canvas.addEventListener('click', function (e) {
             div.innerHTML = "";
             objectIdToAddTo = Object.values(canvasObjects[i])[0];
             for (var j = 0; j < Object.keys(canvasObjects[i]).length; j++) {
-                //Oh boy this is unreadable as fuck
                 if (typeof Object.values(canvasObjects[i])[j] === 'object') {
                     objectVariableToAddTo = Object.keys(canvasObjects[i])[j];
 
@@ -104,7 +106,7 @@ canvas.addEventListener('click', function (e) {
                             + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
                             + "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + Object.values(canvasObjects[i])[j] + '"'
                             + " style=" + '"' + "text-align:center;" + '"' + " type=" + '"' + "text" + '"' +
-                            " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + '"'
+                            " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + " of type:" + typeof Object.values(canvasObjects[i])[j] + '"'
                             + " /> "
                             + "</form></div>"
                         div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">"
@@ -121,7 +123,7 @@ canvas.addEventListener('click', function (e) {
                             + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
                             + "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + Object.values(canvasObjects[i])[j] + '"'
                             + " style=" + '"' + "text-align:center;" + '"' + " type=" + '"' + "text" + '"' +
-                            " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + '"'
+                            " placeholder=" + '"' + Object.keys(canvasObjects[i])[j] + " of type:" + typeof Object.values(canvasObjects[i])[j] + '"'
                             + " /> "
                             + "</form></div>"
                         div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">"
@@ -146,6 +148,8 @@ function changeNumber(value) {
                 }
             }
         }
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        canvasObjects[i].draw(context);
     }
 }
 
@@ -160,6 +164,8 @@ function changeText(value) {
                 }
             }
         }
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        canvasObjects[i].draw(context);
     }
 }
 
@@ -174,9 +180,13 @@ function toggleBool(bool) {
                 }
             }
         }
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        canvasObjects[i].draw(context);
     }
 
 }
+
+
 
 
 function addToObjectValues(listOfValues) {
