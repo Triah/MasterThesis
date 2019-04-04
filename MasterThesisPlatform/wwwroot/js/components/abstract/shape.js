@@ -1,8 +1,9 @@
 'use strict';
 export default class Shape {
-    constructor(id, bounds, moveAble, targetAble, color, text, textVisible) {
+    constructor(id, bounds, moveAble, targetAble, color, text, textVisible, size) {
         this.id = id;
         this.colliding;
+        this.size = size;
         this.color = color;
         this.text = text;
         this.textVisible = textVisible;
@@ -15,14 +16,24 @@ export default class Shape {
     setObjectName(object) {
         this.object = object;
     }
+
+    init(objects){
+        //do nothing
+    }
     
+    updateParams(paramToBeUpdated){
+        if(paramToBeUpdated == "size"){
+            this.scaleSize(this.size);
+        }
+    }
+
     /**
      * This method must be extended when creating a new object for it to be usable by the game creator
      * @param {canvas} canvas 
      */
     setDefaultForUninstantiatedParameters(canvas){
         if(this.bounds == null){
-            this.bounds = [{x:canvas.width/2-100, y:canvas.height/2+100},{x:canvas.width/2+150, y:canvas.height/2-150},{x:canvas.width/2+200, y:canvas.height/2+100}];
+            this.bounds = [{x:canvas.width/2-100, y:canvas.height/2-100},{x:canvas.width/2+100, y:canvas.height/2-100},{x:canvas.width/2+100, y:canvas.height/2+100}, {x:canvas.width/2-100,y:canvas.height/2+100}];
         }
         if(this.moveAble == null){
             this.moveAble = true;
@@ -39,7 +50,40 @@ export default class Shape {
         if(this.textVisible == null){
             this.textVisible = false;
         }
+        if(this.size == null){
+            this.size = 1;
+        }
     }
+
+    getDegreesForAngles(){
+        var newBounds = [];
+        for(var i = 0; i < this.bounds.length; i++){
+            if(i != this.bounds.length-1){
+                var angle = Math.atan2(this.bounds[i+1].y-this.bounds[i].y,this.bounds[i+1].x-this.bounds[i].x)
+                var vectorLength = Math.sqrt(Math.pow(this.bounds[i+1].x-this.bounds[i].x, 2) + Math.pow(this.bounds[i+1].y-this.bounds[i].y, 2));
+            } else {
+                var angle = Math.atan2(this.bounds[0].y-this.bounds[i].y,this.bounds[0].x-this.bounds[i].x)
+                var vectorLength = Math.sqrt(Math.pow(this.bounds[0].x-this.bounds[i].x, 2) + Math.pow(this.bounds[0].y-this.bounds[i].y, 2));
+            }
+            newBounds.push({x:Math.floor(this.bounds[i].x + vectorLength*Math.cos(angle)),y:Math.floor(this.bounds[i].y + vectorLength*Math.sin(angle))})
+        }
+        return newBounds;
+    }
+
+    scaleSize(multiplier){
+        for(var i = 0; i < this.getDegreesForAngles().length; i++){
+            if(i == this.getDegreesForAngles().length-1){
+                this.bounds[0].x = this.getDegreesForAngles()[i].x*multiplier;
+                this.bounds[0].y = this.getDegreesForAngles()[i].y*multiplier;   
+            } else {
+                this.bounds[i+1].x = this.getDegreesForAngles()[i].x*multiplier;
+                this.bounds[i+1].y = this.getDegreesForAngles()[i].y*multiplier;   
+            }
+            
+        }
+        
+    }
+
 
     getBounds() {
         return this.bounds;
@@ -66,7 +110,7 @@ export default class Shape {
     }
 
     process(e,objects){
-        //TODO
+        //Do nothing
     }
 
     draw(context) {

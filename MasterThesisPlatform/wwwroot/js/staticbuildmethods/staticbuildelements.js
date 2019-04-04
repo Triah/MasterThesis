@@ -77,7 +77,7 @@ canvas.addEventListener('click', function (e) {
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'boolean') {
                     //colliding is not supposed to be changed by this
                     if (Object.keys(canvasObjects[i])[j] != "colliding") {
-                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + "toggle option" + "</u></strong></p>";
+                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + Object.keys(canvasObjects[i])[j] +" option" + "</u></strong></p>";
                         if (Object.values(canvasObjects[i])[j] == true) {
                             div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + ">" +
                                 "<input id=" + '"' + Object.keys(canvasObjects[i])[j] + '"' +
@@ -100,7 +100,7 @@ canvas.addEventListener('click', function (e) {
                     }
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'string') {
                     if (Object.keys(canvasObjects[i])[j] != "object") {
-                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + "text option" + "</u></strong></p>";
+                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + Object.keys(canvasObjects[i])[j] +" option" + "</u></strong></p>";
                         if (Object.values(canvasObjects[i])[j] != "") {
                             div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "> current text: <u>" + Object.values(canvasObjects[i])[j] + "</u> </p>";
                         }
@@ -119,7 +119,7 @@ canvas.addEventListener('click', function (e) {
 
                 } else if (typeof Object.values(canvasObjects[i])[j] === 'number') {
                     if (Object.keys(canvasObjects[i])[j] != "id") {
-                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + "number option" + "</u></strong></p>";
+                        div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "><strong><u>" + Object.keys(canvasObjects[i])[j] + " option" + "</u></strong></p>";
                         div.innerHTML += "<p style=" + '"' + "text-align:center;" + '"' + "> current number: <u>" + Object.values(canvasObjects[i])[j] + "</u> </p>";
                         div.innerHTML += "<div style=" + '"' + "text-align:center; margin-bottom:3px;" + '"' + "> "
                             + " <form style=" + '"' + "display: inline-block;" + '"' + ">"
@@ -146,11 +146,14 @@ function changeNumber(value) {
                 if (Object.keys(canvasObjects[i])[j] == value) {
                     var textField = document.getElementById(value + Object.values(canvasObjects[i])[j]);
                     //Reference and value types are wierd so we do this by talking to the interpreter
-                    eval("canvasObjects[i]." + value + " = " + parseInt(textField.value));
+                    eval("canvasObjects[i]." + value + " = " + parseFloat(textField.value));
+                    updateParams(i, value);
                 }
             }
         }
-        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < canvasObjects.length; i++) {
         canvasObjects[i].draw(context);
     }
 }
@@ -163,10 +166,13 @@ function changeText(value) {
                     var textField = document.getElementById(value + Object.values(canvasObjects[i])[j]);
                     //Reference and value types are wierd so we do this by talking to the interpreter
                     eval("canvasObjects[i]." + value + " = " + '"' + textField.value + '"');
+                    updateParams(i, value);
                 }
             }
         }
-        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < canvasObjects.length; i++) {
         canvasObjects[i].draw(context);
     }
 }
@@ -179,10 +185,13 @@ function toggleBool(bool) {
                     //Reference and value types are wierd so we do this by talking to the interpreter
                     eval("canvasObjects[i]." + bool + " = !canvasObjects[i]." + bool);
                     eval("console.log(canvasObjects[i]." + bool + ");");
+                    updateParams(i, bool);
                 }
             }
         }
-        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < canvasObjects.length; i++) {
         canvasObjects[i].draw(context);
     }
 
@@ -249,7 +258,6 @@ function addToObjectValues(listOfValues) {
                                 } else if (lowestCorner > secondLowestCorner) {
                                     Object.values(canvasObjects[i])[j].splice(lowestCorner, 0, newObjectToAdd);
                                 }
-
                             }
 
                         }
@@ -257,16 +265,23 @@ function addToObjectValues(listOfValues) {
                     }
                 }
             }
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            canvasObjects[i].draw(context);
         }
 
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < canvasObjects.length; i++) {
+            canvasObjects[i].draw(context);
+        }
         //set object name to null again
         keysForObject = []
         objectVariableToAddTo = null;
         objectIdToAddTo = null;
     }
 
+}
+
+
+function updateParams(obj,param) {
+    canvasObjects[obj].updateParams(param);
 }
 
 canvas.onmouseup = function (e) {

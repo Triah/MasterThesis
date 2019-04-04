@@ -294,7 +294,7 @@ namespace MasterThesisPlatform.Util
                         {
                             if (j == 0)
                             {
-                                textForDynamicFunction += "idIndex, ";
+                                textForDynamicFunction += "canvasObjects.length, ";
                             }
                             else if (j != 0 && j != variables.Length-1)
                             {
@@ -309,8 +309,8 @@ namespace MasterThesisPlatform.Util
                         textForDynamicFunction += "\n object.setDefaultForUninstantiatedParameters(canvas)";
                         textForDynamicFunction += "\n object.setObjectName(catAndName.split(" + '"' + "." + '"' + ")[0]);";
                         textForDynamicFunction += "\n object.draw(context)\n";
-                        textForDynamicFunction += "\n idIndex++; \n";
-                        textForDynamicFunction += "canvasObjects.push(object);}\n";
+                        textForDynamicFunction += "canvasObjects.push(object); \n";
+                        textForDynamicFunction += "object.init(canvasObjects);\n }\n";
                     }
                     else
                     {
@@ -321,7 +321,7 @@ namespace MasterThesisPlatform.Util
                         {
                             if (j == 0)
                             {
-                                textForDynamicFunction += "idIndex, ";
+                                textForDynamicFunction += "canvasObjects.length, ";
                             }
                             else if (j != 0 && j != variables.Length - 1)
                             {
@@ -336,8 +336,8 @@ namespace MasterThesisPlatform.Util
                         textForDynamicFunction += "\n object.setDefaultForUninstantiatedParameters(canvas)";
                         textForDynamicFunction += "\n object.setObjectName(catAndName.split(" + '"' + "." + '"' + ")[0]);";
                         textForDynamicFunction += "\n object.draw(context)\n";
-                        textForDynamicFunction += "\n idIndex++; \n";
-                        textForDynamicFunction += "canvasObjects.push(object);}\n";
+                        textForDynamicFunction += "canvasObjects.push(object); \n";
+                        textForDynamicFunction += "object.init(canvasObjects);\n }\n";
                     }
                 }
                 textForDynamicFunction += "\n }";

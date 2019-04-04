@@ -3,21 +3,18 @@
 import Shape from '../abstract/shape.js';
 
 export default class MemoryCard extends Shape {
-    constructor(id, bounds, moveAble, targetAble, color, text, textVisible,privateVariables){
-        super(id, bounds, moveAble, targetAble, color, text, textVisible);
-        //Need an image
-        //Needs an image-visible bool
-        //Need a match bool
-        //Needs a clone of some kind
+    constructor(id, bounds, moveAble, targetAble, color, text, textVisible,privateVariables,size){
+        super(id, bounds, moveAble, targetAble, color, text, textVisible,size);
         this.privateVariables = privateVariables;
     }
 
     setDefaultForUninstantiatedParameters(canvas){
-        super.setDefaultForUninstantiatedParameters(canvas);
+        super.setDefaultForUninstantiatedParameters(canvas);     
+        this.privateVariables = {"cloneExists": undefined, "cloneId": undefined, "activeObjects": [], "locked": false };
+    }
 
-        this.privateVariables = {"cloneExists": undefined};
-        //Add new parameters
-        //create a clone of object and link them but let them be seperate objects.
+    init(objects){
+        this.clone(objects);
     }
 
     setObjectName(object) {
@@ -26,32 +23,108 @@ export default class MemoryCard extends Shape {
 
     process(e,objects){
         if(e.type == "mousedown"){
-            this.mouseDownEvent();
-            this.clone(objects);
+            this.checkMatching(objects,e);
+            console.log(this);
         } 
-        if(e.type == "mousemove"){
-            //this serves mostly as a way of showcasing how to do logic for each component to individualize it.
-            //console.log("mousemoveevent");
+    }
+
+    checkMatching(list,e){
+        if(this.getCollisionArea(e)){
+            this.mouseDownEvent();
+            if(this.textVisible && !this.privateVariables.locked){
+                if(list[this.privateVariables.cloneId[0]].privateVariables.activeObjects.indexOf(this.id) == -1){
+                    list[this.privateVariables.cloneId[0]].privateVariables.activeObjects.push(this.id);
+                }
+                if(list[this.privateVariables.cloneId[1]].privateVariables.activeObjects.indexOf(this.id) == -1){
+                    list[this.privateVariables.cloneId[1]].privateVariables.activeObjects.push(this.id);
+                }
+                console.log(list[this.privateVariables.cloneId[0]])
+                console.log(list[this.privateVariables.cloneId[1]])
+            } else {
+                for(var i = 0 ; i < this.privateVariables.activeObjects.length; i++){
+                    if(this.privateVariables.activeObjects[i] == this.id && this.textVisible == false){
+                        this.privateVariables.activeObjects.splice(i,1);
+                    }
+                }
+            }
         }
-        if(e.type == "mouseup"){
-            //console.log("mouseupevent");
+        var lockedItems = [];
+        for(var i = 0; i < list.length; i++){
+            if(list[i].privateVariables.activeObjects.length == 2){
+                if(list[i].privateVariables.activeObjects.indexOf(list[i].id) != -1){
+                    list[i].privateVariables.locked = true;
+                    lockedItems.push(list[i]);
+                }
+            }
+        }
+        var allItemsActivated = [];
+        for(var i = 0; i < list.length; i++){
+            if(list[i].privateVariables.activeObjects.length > 0) {
+                for(var j = 0; j < list[i].privateVariables.activeObjects.length; j++){
+                    if(allItemsActivated.indexOf(list[i].privateVariables.activeObjects[j]) == -1){
+                        allItemsActivated.push(list[i].privateVariables.activeObjects[j]);
+                    }
+                }
+            }
+        }
+        var lockedIds = []
+        for(var i = 0; i < lockedItems.length; i++){
+            lockedIds.push(lockedItems[i].id);
+        }
+        console.log(lockedIds);
+        var nonpairedActive = []
+        nonpairedActive = allItemsActivated.filter(id => !lockedIds.includes(id));
+        console.log("non-paired: " + nonpairedActive);
+        console.log("all: " + allItemsActivated);
+        if(nonpairedActive.length == 2){
+            for(var i = 0; i < list.length; i++){
+                for(var j = 0; j < nonpairedActive.length; j++){
+                    if(list[i].id == nonpairedActive[j]){
+                        list[i].privateVariables.activeObjects = [];                 
+                    }
+                }
+                
+            }
+        }
+        if(nonpairedActive.length > 0 && nonpairedActive.length < 2){
+            for(var i = 0; i < list.length; i++){
+                if(list[i].textVisible && list[i].privateVariables.activeObjects.indexOf(list[i].id) == -1){
+                    list[i].textVisible = false
+                }
+            }
         }
     }
 
     clone(listToAddTo){
-        if(this.privateVariables.cloneExists == undefined){
-            this.privateVariables.cloneExists = true;
-            var testObj = new MemoryCard(listToAddTo.length,[{"x":400,"y":400},{"x":700, "y":400}, {"x": 700, "y":700}, {"x":400,"y":700}],this.moveAble,this.targetAble,this.color,this.text,this.textVisible, this.privateVariables);
-            listToAddTo.push(testObj);
+        for(var object in listToAddTo){
+            if(listToAddTo[object].object == this.object){
+                if(listToAddTo[object].privateVariables.cloneExists == undefined){
+                    var clone = eval("new " + this.object + "("+" listToAddTo.length,[],listToAddTo[object].moveAble," +
+                    "listToAddTo[object].targetAble,listToAddTo[object].color,listToAddTo[object].text,listToAddTo[object].textVisible,listToAddTo[object].privateVariables,listToAddTo[object].size" +")"); /*(listToAddTo.length,[],listToAddTo[object].moveAble,
+                    listToAddTo[object].targetAble,listToAddTo[object].color,listToAddTo[object].text,listToAddTo[object].textVisible,listToAddTo[object].privateVariables,listToAddTo[object].size);*/
+                    console.log(clone)
+                    
+                    listToAddTo[object].privateVariables.cloneExists = true;
+                    for(var i = 0; i < listToAddTo[object].bounds.length;i++){
+                        clone.bounds[i] = {x:listToAddTo[object].bounds[i].x , y:listToAddTo[object].bounds[i].y }; 
+                    }
+                    clone.privateVariables.cloneId = []
+                    clone.setObjectName(this.object);
+                    clone.privateVariables.cloneId.push(listToAddTo[object].id, clone.id)
+                    listToAddTo.push(clone);
+                }
+            }
         }
-        
     }
 
     mouseDownEvent(){
-        if(this.textVisible){
+        if(!this.privateVariables.locked){
+            console.log(this.id);
+            if(this.textVisible){
             this.textVisible = false;
-        } else if (!this.textVisible){
-            this.textVisible = true;
+            } else if (!this.textVisible){
+                this.textVisible = true;
+            }
         }
     }
 }

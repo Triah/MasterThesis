@@ -3,13 +3,13 @@
 import Shape from '../abstract/shape.js';
 
 export default class Square extends Shape{
-    constructor(id, bounds, moveAble, targetAble, color, text, textVisible){
-        super(id, bounds, moveAble, targetAble, color, text, textVisible);
+    constructor(id, bounds, moveAble, targetAble, color, text, textVisible, size){
+        super(id, bounds, moveAble, targetAble, color, text, textVisible, size);
     }
 
     setDefaultForUninstantiatedParameters(canvas){
         super.setDefaultForUninstantiatedParameters(canvas);
-        this.bounds.push({x:100,y:100});
+        
         this.constructProperBounds(100,100);
     }
 
