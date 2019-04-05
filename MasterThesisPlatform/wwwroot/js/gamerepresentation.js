@@ -166,7 +166,7 @@ function changeText(value) {
                     var textField = document.getElementById(value + Object.values(canvasObjects[i])[j]);
                     //Reference and value types are wierd so we do this by talking to the interpreter
                     eval("canvasObjects[i]." + value + " = " + '"' + textField.value + '"');
-                    updateParams(i,value);
+                    updateParams(i, value);
                 }
             }
         }
@@ -185,7 +185,7 @@ function toggleBool(bool) {
                     //Reference and value types are wierd so we do this by talking to the interpreter
                     eval("canvasObjects[i]." + bool + " = !canvasObjects[i]." + bool);
                     eval("console.log(canvasObjects[i]." + bool + ");");
-                    updateParams(i,bool);
+                    updateParams(i, bool);
                 }
             }
         }
@@ -279,6 +279,7 @@ function addToObjectValues(listOfValues) {
 
 }
 
+
 function updateParams(obj,param) {
     canvasObjects[obj].updateParams(param);
 }
@@ -317,15 +318,6 @@ object.init(canvasObjects);
 
 else if(catAndName == "memorymemoryCard.js") { 
 object = new memorymemoryCard(canvasObjects.length, null, null, null, null, null, null, null, null);
- object.setDefaultForUninstantiatedParameters(canvas)
- object.setObjectName(catAndName.split(".")[0]);
- object.draw(context)
-canvasObjects.push(object); 
-object.init(canvasObjects);
- }
-
-else if(catAndName == "abstractcollisionShape.js") { 
-object = new abstractcollisionShape(canvasObjects.length, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)

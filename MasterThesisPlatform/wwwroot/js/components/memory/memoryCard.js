@@ -10,25 +10,34 @@ export default class MemoryCard extends Shape {
 
     setDefaultForUninstantiatedParameters(canvas){
         super.setDefaultForUninstantiatedParameters(canvas);     
-        this.privateVariables = {"cloneExists": undefined, "cloneId": undefined, "activeObjects": [], "locked": false };
+        this.privateVariables.activeObjects = [];
+        this.privateVariables.locked = false;
     }
 
     init(objects){
-        this.clone(objects);
+        if(this.privateVariables.cloneExists == undefined){
+            this.clone(objects);
+        }
+        
     }
 
     setObjectName(object) {
         this.object = object;
     }
 
-    process(e,objects){
+    process(e,objects,socket){
+        console.log(socket);
         if(e.type == "mousedown"){
-            this.checkMatching(objects,e);
-            console.log(this);
+            this.checkMatching(objects,e,socket);
         } 
     }
 
-    checkMatching(list,e){
+    checkMatching(list,e,socket){
+        console.log(socket);
+        socket.emit('updateState',list);
+        var reset = false;
+        var nonpairedActive = [];
+
         if(this.getCollisionArea(e)){
             this.mouseDownEvent();
             if(this.textVisible && !this.privateVariables.locked){
@@ -38,8 +47,6 @@ export default class MemoryCard extends Shape {
                 if(list[this.privateVariables.cloneId[1]].privateVariables.activeObjects.indexOf(this.id) == -1){
                     list[this.privateVariables.cloneId[1]].privateVariables.activeObjects.push(this.id);
                 }
-                console.log(list[this.privateVariables.cloneId[0]])
-                console.log(list[this.privateVariables.cloneId[1]])
             } else {
                 for(var i = 0 ; i < this.privateVariables.activeObjects.length; i++){
                     if(this.privateVariables.activeObjects[i] == this.id && this.textVisible == false){
@@ -71,21 +78,12 @@ export default class MemoryCard extends Shape {
         for(var i = 0; i < lockedItems.length; i++){
             lockedIds.push(lockedItems[i].id);
         }
-        console.log(lockedIds);
-        var nonpairedActive = []
         nonpairedActive = allItemsActivated.filter(id => !lockedIds.includes(id));
-        console.log("non-paired: " + nonpairedActive);
-        console.log("all: " + allItemsActivated);
+        
         if(nonpairedActive.length == 2){
-            for(var i = 0; i < list.length; i++){
-                for(var j = 0; j < nonpairedActive.length; j++){
-                    if(list[i].id == nonpairedActive[j]){
-                        list[i].privateVariables.activeObjects = [];                 
-                    }
-                }
-                
-            }
+            reset = true;
         }
+        
         if(nonpairedActive.length > 0 && nonpairedActive.length < 2){
             for(var i = 0; i < list.length; i++){
                 if(list[i].textVisible && list[i].privateVariables.activeObjects.indexOf(list[i].id) == -1){
@@ -96,14 +94,14 @@ export default class MemoryCard extends Shape {
     }
 
     clone(listToAddTo){
+        if(this.object != null){
         for(var object in listToAddTo){
             if(listToAddTo[object].object == this.object){
                 if(listToAddTo[object].privateVariables.cloneExists == undefined){
-                    var clone = eval("new " + this.object + "("+" listToAddTo.length,[],listToAddTo[object].moveAble," +
-                    "listToAddTo[object].targetAble,listToAddTo[object].color,listToAddTo[object].text,listToAddTo[object].textVisible,listToAddTo[object].privateVariables,listToAddTo[object].size" +")"); /*(listToAddTo.length,[],listToAddTo[object].moveAble,
-                    listToAddTo[object].targetAble,listToAddTo[object].color,listToAddTo[object].text,listToAddTo[object].textVisible,listToAddTo[object].privateVariables,listToAddTo[object].size);*/
-                    console.log(clone)
-                    
+                    if(this.object != null){
+                        var clone = eval("new " + this.object + "("+" listToAddTo.length,[],listToAddTo[object].moveAble," +
+                        "listToAddTo[object].targetAble,listToAddTo[object].color,listToAddTo[object].text,listToAddTo[object].textVisible,listToAddTo[object].privateVariables,listToAddTo[object].size" +")"); 
+                    }
                     listToAddTo[object].privateVariables.cloneExists = true;
                     for(var i = 0; i < listToAddTo[object].bounds.length;i++){
                         clone.bounds[i] = {x:listToAddTo[object].bounds[i].x , y:listToAddTo[object].bounds[i].y }; 
@@ -116,10 +114,10 @@ export default class MemoryCard extends Shape {
             }
         }
     }
+    }
 
     mouseDownEvent(){
         if(!this.privateVariables.locked){
-            console.log(this.id);
             if(this.textVisible){
             this.textVisible = false;
             } else if (!this.textVisible){
