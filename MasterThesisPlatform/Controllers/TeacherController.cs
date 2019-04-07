@@ -107,26 +107,6 @@ namespace MasterThesisPlatform.Controllers
             return RedirectToAction("Index");
         }
 
-        //This needs to be adjusted for specific needs as it is a bare minimum impl
-        [Route("DetailsMongoDbGameEntry")]
-        [HttpGet]
-        public IActionResult DetailsMongoDbGameEntry(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            //Get the database connection  
-            mongoDatabase = GetMongoDatabase();
-            //fetch the details from CustomerDB and pass into view  
-            MongoDBGame game = mongoDatabase.GetCollection<MongoDBGame>("Games").Find<MongoDBGame>(k => k.GameId == id).FirstOrDefault();
-            if (game == null)
-            {
-                return NotFound();
-            }
-            return View(game);
-        }
-
         [Route("DeleteMongoDbGameEntry")]
         [HttpGet]
         public IActionResult DeleteMongoDbGameEntry(int? id)

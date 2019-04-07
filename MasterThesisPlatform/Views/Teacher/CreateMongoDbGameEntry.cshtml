@@ -26,6 +26,19 @@
     var user = await UserManager.GetUserAsync(User);
     if (user.Role.Equals("Teacher"))
     {
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-area="" asp-controller="Teacher" asp-action="StudentsPage">Student List</a></li>
+                <li><a asp-area="" asp-controller="Teacher" asp-action="CreateMongoDbGameEntry">Create New Game</a></li>
+            </ul>
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+
         <h2>Create Game Details</h2>
         <hr />
         <div class="palette-wrapper">
@@ -137,7 +150,7 @@
                 </form>
             </div>
         </div>
-        
+
         @section Scripts {
             @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
         }
