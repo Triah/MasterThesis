@@ -27,16 +27,11 @@
     if (user.Role.Equals("Teacher"))
     {
         <h2>Create Game Details</h2>
-
-        <p>@path</p>
-
         <hr />
         <div class="palette-wrapper">
             <div class="palette-categories">
                 @foreach (var item in categories)
                 {
-                    //This is an example of how to use mongoDB to dynamically create the list and operations
-                    //need methods for the actual code and a function that interprets the code or creates a file
                     <div class="palette-category-item" onclick="showPalette('@item')">
                         <p>@item</p>
                     </div>

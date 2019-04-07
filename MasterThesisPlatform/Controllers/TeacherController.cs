@@ -184,6 +184,16 @@ namespace MasterThesisPlatform.Controllers
             {
                 return NotFound();
             }
+
+            List<MongoDBScript> scriptList = new List<MongoDBScript>();
+
+            foreach (MongoDBScript script in mongoDatabase.GetCollection<MongoDBScript>("Scripts").Find(FilterDefinition<MongoDBScript>.Empty).ToList())
+            {
+                scriptList.Add(script);
+            }
+            ViewData["ContentsOfFile"] = scriptList;
+
+            ViewData["GameContents"] = game.Components;
             return View(game);
         }
 

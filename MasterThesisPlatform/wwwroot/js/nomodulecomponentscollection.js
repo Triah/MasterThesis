@@ -318,18 +318,12 @@
     }
 
     setDefaultForUninstantiatedParameters(canvas){
-        super.setDefaultForUninstantiatedParameters(canvas);
-        if (this.privateVariables == null) {
-            this.privateVariables = { "cloneExists": undefined, "activeVariables": [], "locked": false, "cloneId": [] };
-        }
-        else {
-            this.privateVariables.activeObjects = [];
-            this.privateVariables.locked = false;
-        }
-        
+        super.setDefaultForUninstantiatedParameters(canvas);     
+        this.privateVariables.activeObjects = [];
+        this.privateVariables.locked = false;
     }
 
-    init(objects) {
+    init(objects){
         if(this.privateVariables.cloneExists == undefined){
             this.clone(objects);
         }
@@ -408,7 +402,7 @@
         }
     }
 
-    clone(listToAddTo) {
+    clone(listToAddTo){
         if(this.object != null){
         for(var object in listToAddTo){
             if(listToAddTo[object].object == this.object){
@@ -440,4 +434,584 @@
             }
         }
     }
+}
+  class abstractcollisionShape extends abstractshape {
+    constructor(id, bounds,moveAble,collideAble,targetAble) {
+        super(id,bounds,moveAble,targetAble);
+        this.collideAble = collideAble;
+        this.colliding = false;
+    }
+
+    setDefaultForUninstantiatedParameters(canvas){
+        super.setDefaultForUninstantiatedParameters(canvas);
+        this.collideAble = true;
+    }
+
+    isCollidingWithOtherObject(objects) {
+        var collision = null;
+        if(this.calcCollisionOtherObjectsToThis(objects, this) != null){
+            //calculate from other objects to this object
+            collision = this.calcCollisionOtherObjectsToThis(objects, this);
+        } else if (this.calcCollisionThisToOtherObjects(objects, this) != null){
+            //invert process to cover all lines and point cases
+            collision = this.calcCollisionThisToOtherObjects(objects, this);
+        }
+        return collision;
+    }
+
+    calcCollisionThisToOtherObjects(objects,self){
+        var collision = null;
+        objects.forEach(obj => {
+            if (obj != self) {
+                var areas = [];
+                var allBoundsForPoint = [];
+                for (var i = 0; i < obj.getBounds().length; i++) {
+                    var allBoundsForPoint = [];
+                    //Functioning as intended
+                    for (var j = 0; j < self.getBounds().length; j++) {
+                        var bounds = [];
+                        bounds.push({ x: self.getBounds()[j].x, y: self.getBounds()[j].y });
+                        if (j != self.getBounds().length - 1) {
+                            bounds.push({ x: self.getBounds()[j + 1].x, y: self.getBounds()[j + 1].y })
+                        } else {
+                            bounds.push({ x: self.getBounds()[0].x, y: self.getBounds()[0].y });
+                        }
+                        bounds.push({ x: obj.getBounds()[i].x, y: obj.getBounds()[i].y });
+                        allBoundsForPoint.push(bounds);
+                    }
+
+                    //calculate the lengths of the sides
+                    var sideLengths = self.calcSideLengths(allBoundsForPoint);
+
+                    //functioning as intended
+                    var sValues = self.calcSValue(sideLengths);
+
+                    //calculating areas
+                    areas.push(self.calcTemporaryAreaValues(sValues, sideLengths));
+
+                    //For each of the triangles combine the areas
+                    var totalAreas = self.calcArea(areas);
+
+                    for(var k = 0; k < totalAreas.length; k++){
+                        if (Math.floor(totalAreas[k]) == Math.floor(self.area())) {
+                            collision = {firstObj: self, secondObj: obj, cornerForCollision: k};
+                        }
+                    }
+                }
+            }
+        });
+        return collision;
+    }
+
+    calcCollisionOtherObjectsToThis(objects,self){
+        var collision = null;
+        objects.forEach(obj => {
+            if (obj != self) {
+                var areas = [];
+                var allBoundsForPoint = [];
+                for (var i = 0; i < self.getBounds().length; i++) {
+                    var allBoundsForPoint = [];
+                    //Functioning as intended
+                    for (var j = 0; j < obj.getBounds().length; j++) {
+                        var bounds = [];
+                        bounds.push({ x: obj.getBounds()[j].x, y: obj.getBounds()[j].y });
+                        if (j != obj.getBounds().length - 1) {
+                            bounds.push({ x: obj.getBounds()[j + 1].x, y: obj.getBounds()[j + 1].y })
+                        } else {
+                            bounds.push({ x: obj.getBounds()[0].x, y: obj.getBounds()[0].y });
+                        }
+                        bounds.push({ x: self.getBounds()[i].x, y: self.getBounds()[i].y });
+                        allBoundsForPoint.push(bounds);
+                    }
+
+                    //calculate the lengths of the sides
+                    var sideLengths = self.calcSideLengths(allBoundsForPoint);
+
+                    //functioning as intended
+                    var sValues = self.calcSValue(sideLengths);
+
+                    //calculating areas
+                    areas.push(self.calcTemporaryAreaValues(sValues, sideLengths));
+
+                    //For each of the triangles combine the areas
+                    var totalAreas = self.calcArea(areas);
+
+                    for(var k = 0; k < totalAreas.length; k++){
+                        if (Math.floor(totalAreas[k]) == Math.floor(obj.area())) {
+                            collision = {firstObj: obj, secondObj: self, cornerForCollision: k};
+                        }
+                    }
+                }
+            }
+        });
+        return collision;
+    }
+
+    calcSideLengths(allBoundsForPoint) {
+        var sideLengths = []
+        for (var k = 0; k < allBoundsForPoint.length; k++) {
+            var lengthsOfEachTriangle = [];
+            for (var b = 0; b < allBoundsForPoint[k].length; b++) {
+                if (b != allBoundsForPoint[k].length - 1) {
+                    var vector = { x1: allBoundsForPoint[k][b].x, y1: allBoundsForPoint[k][b].y, x2: allBoundsForPoint[k][b + 1].x, y2: allBoundsForPoint[k][b + 1].y };
+                } else {
+                    var vector = { x1: allBoundsForPoint[k][b].x, y1: allBoundsForPoint[k][b].y, x2: allBoundsForPoint[k][0].x, y2: allBoundsForPoint[k][0].y };
+                }
+                var lengthx = vector.x2 - vector.x1;
+                var lengthy = vector.y2 - vector.y1;
+                var length = Math.sqrt(Math.pow(lengthx, 2) + Math.pow(lengthy, 2));
+                lengthsOfEachTriangle.push(length);
+            }
+            sideLengths.push(lengthsOfEachTriangle);
+        }
+        return sideLengths;
+    }
+
+    calcArea(tempAreaValues) {
+        var totalAreas = []
+        for (var k = 0; k < tempAreaValues.length; k++) {
+            var totalArea = 0
+            for (var b = 0; b < tempAreaValues[k].length; b++) {
+                totalArea += tempAreaValues[k][b];
+            }
+            totalAreas.push(totalArea);
+        }
+        return totalAreas;
+    }
+
+    calcTemporaryAreaValues(sValues, sideLengths) {
+        var tempAreaValues = []
+        for (var k = 0; k < sValues.length; k++) {
+            var a = 0;
+            for (var b = 0; b < sideLengths[k].length; b++) {
+                if (a == 0) {
+                    a = sValues[k] - sideLengths[k][b];
+                } else {
+                    a *= sValues[k] - sideLengths[k][b];
+                }
+            }
+            tempAreaValues.push(a);
+        }
+
+        for (var k = 0; k < tempAreaValues.length; k++) {
+            tempAreaValues[k] = sValues[k] * tempAreaValues[k];
+            tempAreaValues[k] = Math.sqrt(tempAreaValues[k]);
+        }
+        return tempAreaValues;
+    }
+
+    calcSValue(sideLengthsArray) {
+        var sValues = []
+        for (var k = 0; k < sideLengthsArray.length; k++) {
+            var s = 0;
+            for (var b = 0; b < sideLengthsArray[k].length; b++) {
+                s += sideLengthsArray[k][b];
+            }
+            s = s / 2;
+            sValues.push(s);
+        }
+        return sValues;
+    }
+
+}  class dwadwamemoryCard extends abstractshape {
+    constructor(id, bounds, moveAble, targetAble, color, text, textVisible,privateVariables,size){
+        super(id, bounds, moveAble, targetAble, color, text, textVisible,size);
+        this.privateVariables = privateVariables;
+    }
+
+    setDefaultForUninstantiatedParameters(canvas){
+        super.setDefaultForUninstantiatedParameters(canvas);     
+        this.privateVariables.activeObjects = [];
+        this.privateVariables.locked = false;
+    }
+
+    init(objects){
+        if(this.privateVariables.cloneExists == undefined){
+            this.clone(objects);
+        }
+        
+    }
+
+    setObjectName(object) {
+        this.object = object;
+    }
+
+    process(e,objects,socket){
+        console.log(socket);
+        if(e.type == "mousedown"){
+            this.checkMatching(objects,e,socket);
+        } 
+    }
+
+    checkMatching(list,e,socket){
+        console.log(socket);
+        socket.emit('updateState',list);
+        var reset = false;
+        var nonpairedActive = [];
+
+        if(this.getCollisionArea(e)){
+            this.mouseDownEvent();
+            if(this.textVisible && !this.privateVariables.locked){
+                if(list[this.privateVariables.cloneId[0]].privateVariables.activeObjects.indexOf(this.id) == -1){
+                    list[this.privateVariables.cloneId[0]].privateVariables.activeObjects.push(this.id);
+                }
+                if(list[this.privateVariables.cloneId[1]].privateVariables.activeObjects.indexOf(this.id) == -1){
+                    list[this.privateVariables.cloneId[1]].privateVariables.activeObjects.push(this.id);
+                }
+            } else {
+                for(var i = 0 ; i < this.privateVariables.activeObjects.length; i++){
+                    if(this.privateVariables.activeObjects[i] == this.id && this.textVisible == false){
+                        this.privateVariables.activeObjects.splice(i,1);
+                    }
+                }
+            }
+        }
+        var lockedItems = [];
+        for(var i = 0; i < list.length; i++){
+            if(list[i].privateVariables.activeObjects.length == 2){
+                if(list[i].privateVariables.activeObjects.indexOf(list[i].id) != -1){
+                    list[i].privateVariables.locked = true;
+                    lockedItems.push(list[i]);
+                }
+            }
+        }
+        var allItemsActivated = [];
+        for(var i = 0; i < list.length; i++){
+            if(list[i].privateVariables.activeObjects.length > 0) {
+                for(var j = 0; j < list[i].privateVariables.activeObjects.length; j++){
+                    if(allItemsActivated.indexOf(list[i].privateVariables.activeObjects[j]) == -1){
+                        allItemsActivated.push(list[i].privateVariables.activeObjects[j]);
+                    }
+                }
+            }
+        }
+        var lockedIds = []
+        for(var i = 0; i < lockedItems.length; i++){
+            lockedIds.push(lockedItems[i].id);
+        }
+        nonpairedActive = allItemsActivated.filter(id => !lockedIds.includes(id));
+        
+        if(nonpairedActive.length == 2){
+            reset = true;
+        }
+        
+        if(nonpairedActive.length > 0 && nonpairedActive.length < 2){
+            for(var i = 0; i < list.length; i++){
+                if(list[i].textVisible && list[i].privateVariables.activeObjects.indexOf(list[i].id) == -1){
+                    list[i].textVisible = false
+                }
+            }
+        }
+    }
+
+    clone(listToAddTo){
+        if(this.object != null){
+        for(var object in listToAddTo){
+            if(listToAddTo[object].object == this.object){
+                if(listToAddTo[object].privateVariables.cloneExists == undefined){
+                    if(this.object != null){
+                        var clone = eval("new " + this.object + "("+" listToAddTo.length,[],listToAddTo[object].moveAble," +
+                        "listToAddTo[object].targetAble,listToAddTo[object].color,listToAddTo[object].text,listToAddTo[object].textVisible,listToAddTo[object].privateVariables,listToAddTo[object].size" +")"); 
+                    }
+                    listToAddTo[object].privateVariables.cloneExists = true;
+                    for(var i = 0; i < listToAddTo[object].bounds.length;i++){
+                        clone.bounds[i] = {x:listToAddTo[object].bounds[i].x , y:listToAddTo[object].bounds[i].y }; 
+                    }
+                    clone.privateVariables.cloneId = []
+                    clone.setObjectName(this.object);
+                    clone.privateVariables.cloneId.push(listToAddTo[object].id, clone.id)
+                    listToAddTo.push(clone);
+                }
+            }
+        }
+    }
+    }
+
+    mouseDownEvent(){
+        if(!this.privateVariables.locked){
+            if(this.textVisible){
+            this.textVisible = false;
+            } else if (!this.textVisible){
+                this.textVisible = true;
+            }
+        }
+    }
+}
+  class testsmemoryCard extends abstractshape {
+    constructor(id, bounds, moveAble, targetAble, color, text, textVisible,privateVariables,size){
+        super(id, bounds, moveAble, targetAble, color, text, textVisible,size);
+        this.privateVariables = privateVariables;
+    }
+
+    setDefaultForUninstantiatedParameters(canvas){
+        super.setDefaultForUninstantiatedParameters(canvas);     
+        this.privateVariables.activeObjects = [];
+        this.privateVariables.locked = false;
+    }
+
+    init(objects){
+        if(this.privateVariables.cloneExists == undefined){
+            this.clone(objects);
+        }
+        
+    }
+
+    setObjectName(object) {
+        this.object = object;
+    }
+
+    process(e,objects,socket){
+        console.log(socket);
+        if(e.type == "mousedown"){
+            this.checkMatching(objects,e,socket);
+        } 
+    }
+
+    checkMatching(list,e,socket){
+        console.log(socket);
+        socket.emit('updateState',list);
+        var reset = false;
+        var nonpairedActive = [];
+
+        if(this.getCollisionArea(e)){
+            this.mouseDownEvent();
+            if(this.textVisible && !this.privateVariables.locked){
+                if(list[this.privateVariables.cloneId[0]].privateVariables.activeObjects.indexOf(this.id) == -1){
+                    list[this.privateVariables.cloneId[0]].privateVariables.activeObjects.push(this.id);
+                }
+                if(list[this.privateVariables.cloneId[1]].privateVariables.activeObjects.indexOf(this.id) == -1){
+                    list[this.privateVariables.cloneId[1]].privateVariables.activeObjects.push(this.id);
+                }
+            } else {
+                for(var i = 0 ; i < this.privateVariables.activeObjects.length; i++){
+                    if(this.privateVariables.activeObjects[i] == this.id && this.textVisible == false){
+                        this.privateVariables.activeObjects.splice(i,1);
+                    }
+                }
+            }
+        }
+        var lockedItems = [];
+        for(var i = 0; i < list.length; i++){
+            if(list[i].privateVariables.activeObjects.length == 2){
+                if(list[i].privateVariables.activeObjects.indexOf(list[i].id) != -1){
+                    list[i].privateVariables.locked = true;
+                    lockedItems.push(list[i]);
+                }
+            }
+        }
+        var allItemsActivated = [];
+        for(var i = 0; i < list.length; i++){
+            if(list[i].privateVariables.activeObjects.length > 0) {
+                for(var j = 0; j < list[i].privateVariables.activeObjects.length; j++){
+                    if(allItemsActivated.indexOf(list[i].privateVariables.activeObjects[j]) == -1){
+                        allItemsActivated.push(list[i].privateVariables.activeObjects[j]);
+                    }
+                }
+            }
+        }
+        var lockedIds = []
+        for(var i = 0; i < lockedItems.length; i++){
+            lockedIds.push(lockedItems[i].id);
+        }
+        nonpairedActive = allItemsActivated.filter(id => !lockedIds.includes(id));
+        
+        if(nonpairedActive.length == 2){
+            reset = true;
+        }
+        
+        if(nonpairedActive.length > 0 && nonpairedActive.length < 2){
+            for(var i = 0; i < list.length; i++){
+                if(list[i].textVisible && list[i].privateVariables.activeObjects.indexOf(list[i].id) == -1){
+                    list[i].textVisible = false
+                }
+            }
+        }
+    }
+
+    clone(listToAddTo){
+        if(this.object != null){
+        for(var object in listToAddTo){
+            if(listToAddTo[object].object == this.object){
+                if(listToAddTo[object].privateVariables.cloneExists == undefined){
+                    if(this.object != null){
+                        var clone = eval("new " + this.object + "("+" listToAddTo.length,[],listToAddTo[object].moveAble," +
+                        "listToAddTo[object].targetAble,listToAddTo[object].color,listToAddTo[object].text,listToAddTo[object].textVisible,listToAddTo[object].privateVariables,listToAddTo[object].size" +")"); 
+                    }
+                    listToAddTo[object].privateVariables.cloneExists = true;
+                    for(var i = 0; i < listToAddTo[object].bounds.length;i++){
+                        clone.bounds[i] = {x:listToAddTo[object].bounds[i].x , y:listToAddTo[object].bounds[i].y }; 
+                    }
+                    clone.privateVariables.cloneId = []
+                    clone.setObjectName(this.object);
+                    clone.privateVariables.cloneId.push(listToAddTo[object].id, clone.id)
+                    listToAddTo.push(clone);
+                }
+            }
+        }
+    }
+    }
+
+    mouseDownEvent(){
+        if(!this.privateVariables.locked){
+            if(this.textVisible){
+            this.textVisible = false;
+            } else if (!this.textVisible){
+                this.textVisible = true;
+            }
+        }
+    }
+}
+  class testcategorymemoryCard extends abstractshape {
+    constructor(id, bounds, moveAble, targetAble, color, text, textVisible,privateVariables,size){
+        super(id, bounds, moveAble, targetAble, color, text, textVisible,size);
+        this.privateVariables = privateVariables;
+    }
+
+    setDefaultForUninstantiatedParameters(canvas){
+        super.setDefaultForUninstantiatedParameters(canvas);     
+        this.privateVariables.activeObjects = [];
+        this.privateVariables.locked = false;
+    }
+
+    init(objects){
+        if(this.privateVariables.cloneExists == undefined){
+            this.clone(objects);
+        }
+        
+    }
+
+    setObjectName(object) {
+        this.object = object;
+    }
+
+    process(e,objects,socket){
+        console.log(socket);
+        if(e.type == "mousedown"){
+            this.checkMatching(objects,e,socket);
+        } 
+    }
+
+    checkMatching(list,e,socket){
+        console.log(socket);
+        socket.emit('updateState',list);
+        var reset = false;
+        var nonpairedActive = [];
+
+        if(this.getCollisionArea(e)){
+            this.mouseDownEvent();
+            if(this.textVisible && !this.privateVariables.locked){
+                if(list[this.privateVariables.cloneId[0]].privateVariables.activeObjects.indexOf(this.id) == -1){
+                    list[this.privateVariables.cloneId[0]].privateVariables.activeObjects.push(this.id);
+                }
+                if(list[this.privateVariables.cloneId[1]].privateVariables.activeObjects.indexOf(this.id) == -1){
+                    list[this.privateVariables.cloneId[1]].privateVariables.activeObjects.push(this.id);
+                }
+            } else {
+                for(var i = 0 ; i < this.privateVariables.activeObjects.length; i++){
+                    if(this.privateVariables.activeObjects[i] == this.id && this.textVisible == false){
+                        this.privateVariables.activeObjects.splice(i,1);
+                    }
+                }
+            }
+        }
+        var lockedItems = [];
+        for(var i = 0; i < list.length; i++){
+            if(list[i].privateVariables.activeObjects.length == 2){
+                if(list[i].privateVariables.activeObjects.indexOf(list[i].id) != -1){
+                    list[i].privateVariables.locked = true;
+                    lockedItems.push(list[i]);
+                }
+            }
+        }
+        var allItemsActivated = [];
+        for(var i = 0; i < list.length; i++){
+            if(list[i].privateVariables.activeObjects.length > 0) {
+                for(var j = 0; j < list[i].privateVariables.activeObjects.length; j++){
+                    if(allItemsActivated.indexOf(list[i].privateVariables.activeObjects[j]) == -1){
+                        allItemsActivated.push(list[i].privateVariables.activeObjects[j]);
+                    }
+                }
+            }
+        }
+        var lockedIds = []
+        for(var i = 0; i < lockedItems.length; i++){
+            lockedIds.push(lockedItems[i].id);
+        }
+        nonpairedActive = allItemsActivated.filter(id => !lockedIds.includes(id));
+        
+        if(nonpairedActive.length == 2){
+            reset = true;
+        }
+        
+        if(nonpairedActive.length > 0 && nonpairedActive.length < 2){
+            for(var i = 0; i < list.length; i++){
+                if(list[i].textVisible && list[i].privateVariables.activeObjects.indexOf(list[i].id) == -1){
+                    list[i].textVisible = false
+                }
+            }
+        }
+    }
+
+    clone(listToAddTo){
+        if(this.object != null){
+        for(var object in listToAddTo){
+            if(listToAddTo[object].object == this.object){
+                if(listToAddTo[object].privateVariables.cloneExists == undefined){
+                    if(this.object != null){
+                        var clone = eval("new " + this.object + "("+" listToAddTo.length,[],listToAddTo[object].moveAble," +
+                        "listToAddTo[object].targetAble,listToAddTo[object].color,listToAddTo[object].text,listToAddTo[object].textVisible,listToAddTo[object].privateVariables,listToAddTo[object].size" +")"); 
+                    }
+                    listToAddTo[object].privateVariables.cloneExists = true;
+                    for(var i = 0; i < listToAddTo[object].bounds.length;i++){
+                        clone.bounds[i] = {x:listToAddTo[object].bounds[i].x , y:listToAddTo[object].bounds[i].y }; 
+                    }
+                    clone.privateVariables.cloneId = []
+                    clone.setObjectName(this.object);
+                    clone.privateVariables.cloneId.push(listToAddTo[object].id, clone.id)
+                    listToAddTo.push(clone);
+                }
+            }
+        }
+    }
+    }
+
+    mouseDownEvent(){
+        if(!this.privateVariables.locked){
+            if(this.textVisible){
+            this.textVisible = false;
+            } else if (!this.textVisible){
+                this.textVisible = true;
+            }
+        }
+    }
+}
+  class testcategorysquare extends abstractshape
+ {    constructor(id, bounds, moveAble, targetAble, color, text, textVisible, size){
+        super(id, bounds, moveAble, targetAble, color, text, textVisible, size);
+    }
+
+    setDefaultForUninstantiatedParameters(canvas){
+        super.setDefaultForUninstantiatedParameters(canvas);
+        
+        this.constructProperBounds(100,100);
+    }
+
+    constructProperBounds(w,h){
+        var startX = this.bounds[0].x;
+        var startY = this.bounds[0].y;
+
+        if(this.bounds.length == 4){
+            this.bounds[0] = { x:startX, y:startY };
+            this.bounds[1] = { x:startX + w, y: startY };
+            this.bounds[2] = { x:startX + w, y: startY + h };
+            this.bounds[3] = { x: startX, y: startY + h};
+            return this.bounds;
+        } else {
+            console.log("shape is not a square removing it from canvas");
+            return this.bounds;
+        }
+    }
+
+    
+
 }

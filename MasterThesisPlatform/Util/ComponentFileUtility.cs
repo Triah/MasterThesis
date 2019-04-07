@@ -342,6 +342,49 @@ namespace MasterThesisPlatform.Util
                 }
                 textForDynamicFunction += "\n }";
 
+                //Add function for creating existing objects
+                textForDynamicFunction += "\n\n";
+
+                textForDynamicFunction += "function createExistingObject(obj){ \n";
+                textForDynamicFunction += "var objectName = obj.object;";
+                for (int i = 0; i < namesForMethodComparison.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        textForDynamicFunction += "\n" + "if(obj.object == " + '"' + namesForMethodComparison[i].Split(".")[0] + '"' + ") { \n" +
+                            "obj = new " + namesForMethodComparison[i].Split(".")[0] + "(";
+                        string[] variables = scriptList[i].ComponentContent.Split("constructor(")[1].Split(")")[0].Split(",");
+                        for (int j = 0; j < variables.Length; j++)
+                        {
+                            textForDynamicFunction += "obj." + variables[j] + ",";
+                        }
+                        textForDynamicFunction += ");";
+                       textForDynamicFunction += "\n obj.setDefaultForUninstantiatedParameters(canvas); \n" +
+                            "obj.setObjectName(objectName); \n" +
+                            "obj.draw(context); \n" +
+                            "canvasObjects.push(obj); \n" +
+                            "obj.init(canvasObjects); \n } \n";
+                    }
+                    else
+                    {
+                        textForDynamicFunction += "\n" + "else if(obj.object == " + '"' + namesForMethodComparison[i].Split(".")[0] + '"' + ") { \n" +
+                                                        "obj = new " + namesForMethodComparison[i].Split(".")[0] + "(";
+                        string[] variables = scriptList[i].ComponentContent.Split("constructor(")[1].Split(")")[0].Split(",");
+                        for (int j = 0; j < variables.Length; j++)
+                        {
+                            textForDynamicFunction += "obj." + variables[j] + ",";
+                        }
+                        textForDynamicFunction += ");";
+                        textForDynamicFunction += "\n obj.setDefaultForUninstantiatedParameters(canvas); \n" +
+                             "obj.setObjectName(objectName); \n" +
+                             "obj.draw(context); \n" +
+                             "canvasObjects.push(obj); \n" +
+                             "obj.init(canvasObjects); \n } \n";
+                    }
+                }
+
+                textForDynamicFunction += "\n }";
+
                 File.WriteAllText(filePath, staticFileText + textForDynamicFunction);
             }
             else
