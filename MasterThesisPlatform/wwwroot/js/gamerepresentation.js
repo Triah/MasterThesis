@@ -317,52 +317,7 @@ object.init(canvasObjects);
  }
 
 else if(catAndName == "memorymemoryCard.js") { 
-object = new memorymemoryCard(canvasObjects.length, null, null, null, null, null, null, null, null);
- object.setDefaultForUninstantiatedParameters(canvas)
- object.setObjectName(catAndName.split(".")[0]);
- object.draw(context)
-canvasObjects.push(object); 
-object.init(canvasObjects);
- }
-
-else if(catAndName == "abstractcollisionShape.js") { 
-object = new abstractcollisionShape(canvasObjects.length, null, null, null, null);
- object.setDefaultForUninstantiatedParameters(canvas)
- object.setObjectName(catAndName.split(".")[0]);
- object.draw(context)
-canvasObjects.push(object); 
-object.init(canvasObjects);
- }
-
-else if(catAndName == "dwadwamemoryCard.js") { 
-object = new dwadwamemoryCard(canvasObjects.length, null, null, null, null, null, null, null, null);
- object.setDefaultForUninstantiatedParameters(canvas)
- object.setObjectName(catAndName.split(".")[0]);
- object.draw(context)
-canvasObjects.push(object); 
-object.init(canvasObjects);
- }
-
-else if(catAndName == "testsmemoryCard.js") { 
-object = new testsmemoryCard(canvasObjects.length, null, null, null, null, null, null, null, null);
- object.setDefaultForUninstantiatedParameters(canvas)
- object.setObjectName(catAndName.split(".")[0]);
- object.draw(context)
-canvasObjects.push(object); 
-object.init(canvasObjects);
- }
-
-else if(catAndName == "testcategorymemoryCard.js") { 
-object = new testcategorymemoryCard(canvasObjects.length, null, null, null, null, null, null, null, null);
- object.setDefaultForUninstantiatedParameters(canvas)
- object.setObjectName(catAndName.split(".")[0]);
- object.draw(context)
-canvasObjects.push(object); 
-object.init(canvasObjects);
- }
-
-else if(catAndName == "testcategorysquare.js") { 
-object = new testcategorysquare(canvasObjects.length, null, null, null, null, null, null, null);
+object = new memorymemoryCard(canvasObjects.length, null, null, null, null, null, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
  object.setObjectName(catAndName.split(".")[0]);
  object.draw(context)
@@ -393,52 +348,7 @@ obj.init(canvasObjects);
  } 
 
 else if(obj.object == "memorymemoryCard") { 
-obj = new memorymemoryCard(obj.id,obj. bounds,obj. moveAble,obj. targetAble,obj. color,obj. text,obj. textVisible,obj.privateVariables,obj.size,);
- obj.setDefaultForUninstantiatedParameters(canvas); 
-obj.setObjectName(objectName); 
-obj.draw(context); 
-canvasObjects.push(obj); 
-obj.init(canvasObjects); 
- } 
-
-else if(obj.object == "abstractcollisionShape") { 
-obj = new abstractcollisionShape(obj.id,obj. bounds,obj.moveAble,obj.collideAble,obj.targetAble,);
- obj.setDefaultForUninstantiatedParameters(canvas); 
-obj.setObjectName(objectName); 
-obj.draw(context); 
-canvasObjects.push(obj); 
-obj.init(canvasObjects); 
- } 
-
-else if(obj.object == "dwadwamemoryCard") { 
-obj = new dwadwamemoryCard(obj.id,obj. bounds,obj. moveAble,obj. targetAble,obj. color,obj. text,obj. textVisible,obj.privateVariables,obj.size,);
- obj.setDefaultForUninstantiatedParameters(canvas); 
-obj.setObjectName(objectName); 
-obj.draw(context); 
-canvasObjects.push(obj); 
-obj.init(canvasObjects); 
- } 
-
-else if(obj.object == "testsmemoryCard") { 
-obj = new testsmemoryCard(obj.id,obj. bounds,obj. moveAble,obj. targetAble,obj. color,obj. text,obj. textVisible,obj.privateVariables,obj.size,);
- obj.setDefaultForUninstantiatedParameters(canvas); 
-obj.setObjectName(objectName); 
-obj.draw(context); 
-canvasObjects.push(obj); 
-obj.init(canvasObjects); 
- } 
-
-else if(obj.object == "testcategorymemoryCard") { 
-obj = new testcategorymemoryCard(obj.id,obj. bounds,obj. moveAble,obj. targetAble,obj. color,obj. text,obj. textVisible,obj.privateVariables,obj.size,);
- obj.setDefaultForUninstantiatedParameters(canvas); 
-obj.setObjectName(objectName); 
-obj.draw(context); 
-canvasObjects.push(obj); 
-obj.init(canvasObjects); 
- } 
-
-else if(obj.object == "testcategorysquare") { 
-obj = new testcategorysquare(obj.id,obj. bounds,obj. moveAble,obj. targetAble,obj. color,obj. text,obj. textVisible,obj. size,);
+obj = new memorymemoryCard(obj.id,obj. bounds,obj. moveAble,obj. targetAble,obj. color,obj. text,obj. textVisible,obj. privateVariables,obj. size,obj. imageURL,);
  obj.setDefaultForUninstantiatedParameters(canvas); 
 obj.setObjectName(objectName); 
 obj.draw(context); 
