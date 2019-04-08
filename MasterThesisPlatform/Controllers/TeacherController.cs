@@ -44,6 +44,30 @@ namespace MasterThesisPlatform.Controllers
         [Route("StudentsPage")]
         public IActionResult StudentsPage()
         {
+            List<ApplicationUser> students = new List<ApplicationUser>();
+            string nameOfCurrentUser = null;
+            if (this._userManager.GetUserAsync(HttpContext.User) != null)
+            {
+                var currentUser = this._userManager.GetUserAsync(HttpContext.User);
+                if (currentUser.Result != null)
+                {
+                    nameOfCurrentUser = currentUser.Result.FirstName + " " + currentUser.Result.LastName;
+                }
+            }
+
+            foreach (ApplicationUser user in _context.Users)
+            {
+                if (user.Role.Equals("Student"))
+                {
+                    if (user.Teacher != null && nameOfCurrentUser != null)
+                    {
+                        if (user.Teacher.Equals(nameOfCurrentUser)){
+                            students.Add(user);
+                        }
+                    }
+                }
+            }
+            ViewData["students"] = students;
             return View();
         }
 
@@ -87,7 +111,7 @@ namespace MasterThesisPlatform.Controllers
                         game.GameId = Guid.NewGuid().GetHashCode();
                         game.Author = user.Result.FirstName + " " + user.Result.LastName;
                         game.Components = HttpContext.Request.Form["ContentsOfCanvas"].ToString();
-                        
+
                         mongoDatabase.GetCollection<MongoDBGame>("Games").InsertOne(game);
 
                         Game g = new Game();

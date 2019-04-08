@@ -1,20 +1,81 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Microsoft.AspNetCore.Identity;
+@using MasterThesisPlatform.Data;
 @{
+    var listOfStudents = ViewData["students"] as List<MasterThesisPlatform.Data.ApplicationUser>;
 }
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                <li><a asp-area="" asp-controller="Teacher" asp-action="StudentsPage">Student List</a></li>
-                <li><a asp-area="" asp-controller="Teacher" asp-action="CreateMongoDbGameEntry">Create New Game</a></li>
-            </ul>
-            <partial name="_LoginPartial" />
-        </div>
-    </div>
-</nav>
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
-<h1>students page for viewing your class</h1>
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+    if (user.Role.Equals("Teacher"))
+    {
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-area="" asp-controller="Teacher" asp-action="StudentsPage">Student List</a></li>
+                        <li><a asp-area="" asp-controller="Teacher" asp-action="CreateMongoDbGameEntry">Create New Game</a></li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+
+        <br />
+
+        <table class="table table-bordered" style="width:600px">
+            <thead>
+                <tr>
+                    <th>
+                        Student Name:
+                    </th>
+                    <th>
+                        Email:
+                    </th>
+                    <th>
+                        School:
+                    </th>
+                    <th>
+                        Grade:
+                    </th>
+                    <th>
+                        Age:
+                    </th>
+                    <th>
+                        Results:
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in listOfStudents)
+                {
+                    <tr>
+                        <td>
+                            @student.FirstName @student.LastName
+                        </td>
+                        <td>
+                            @student.Email
+                        </td>
+                        <td>
+                            @student.School
+                        </td>
+                        <td>
+                            @student.Grade
+                        </td>
+                        <td>
+                            @student.Age
+                        </td>
+                        <td>
+                            Not yet implemented.
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    }
+}
