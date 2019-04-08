@@ -14,38 +14,75 @@
     var user = await UserManager.GetUserAsync(User);
     if (user.Role.Equals("Student"))
     {
-        
-        <h1>This is the student page</h1>
+        <br />
         <div class="row">
-                <ul class="nav nav-pills nav-stacked">
-                    @foreach(var game in Model)
+            <table class="table table-bordered" style="width:600px">
+                <thead>
+                    <tr>
+                        <th>
+                            Game name:
+                        </th>
+                        <th>
+                            Author:
+                        </th>
+                        <th>
+                            Player Capacity:
+                        </th>
+                        <th>
+                            Play
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var game in Model)
                     {
                         if (game.Author.Equals(user.Teacher))
                         {
-                            <li><a href="@game.GameId">Start @game.Name</a></li>
+
+
+                            <tr>
+                                <td>
+                                    @game.Name
+                                </td>
+                                <td>
+                                    @game.Author
+                                </td>
+                                <td>
+                                    @game.Capacity
+                                </td>
+                                <td>
+                                    <a href="@game.GameId">Play</a>
+                                </td>
+
+                            </tr>
                         }
-                            
                     }
-                </ul>
+                </tbody>
+            </table>
+
+
         </div>
-        
-        
 
     }
 
 
 
 
-    else
-    {
-        <h1>You shouldn't be here</h1>
-
-    }
 
 
-}
+
+
+
 else
 {
-    <h1>No login detected</h1>
+    <h1> You shouldn't be here</h1>
 
 }
+
+
+        }
+        else
+        {
+<h1>No login detected</h1>
+
+        }

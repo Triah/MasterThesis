@@ -7,7 +7,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
     var user = await UserManager.GetUserAsync(User);
-    <h1>@user.Email</h1>
+    <h1 style="text-align:center; ; padding-bottom:30%; padding-top:30%;">Loading, please wait...</h1>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <script type="text/javascript">
