@@ -307,15 +307,6 @@ canvasObjects.push(object);
 object.init(canvasObjects);
  }
 
-else if(catAndName == "shapessquare.js") { 
-object = new shapessquare(canvasObjects.length, null, null, null, null, null, null, null);
- object.setDefaultForUninstantiatedParameters(canvas)
- object.setObjectName(catAndName.split(".")[0]);
- object.draw(context)
-canvasObjects.push(object); 
-object.init(canvasObjects);
- }
-
 else if(catAndName == "memorymemoryCard.js") { 
 object = new memorymemoryCard(canvasObjects.length, null, null, null, null, null, null, null, null, null);
  object.setDefaultForUninstantiatedParameters(canvas)
@@ -331,15 +322,6 @@ function createExistingObject(obj){
 var objectName = obj.object;
 if(obj.object == "abstractshape") { 
 obj = new abstractshape(obj.id,obj. bounds,obj. moveAble,obj. targetAble,obj. color,obj. text,obj. textVisible,obj. size,);
- obj.setDefaultForUninstantiatedParameters(canvas); 
-obj.setObjectName(objectName); 
-obj.draw(context); 
-canvasObjects.push(obj); 
-obj.init(canvasObjects); 
- } 
-
-else if(obj.object == "shapessquare") { 
-obj = new shapessquare(obj.id,obj. bounds,obj. moveAble,obj. targetAble,obj. color,obj. text,obj. textVisible,obj. size,);
  obj.setDefaultForUninstantiatedParameters(canvas); 
 obj.setObjectName(objectName); 
 obj.draw(context); 

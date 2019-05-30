@@ -13,6 +13,9 @@ export default class MemoryCard extends Shape {
     setDefaultForUninstantiatedParameters(canvas) {
         super.setDefaultForUninstantiatedParameters(canvas);
         this.targetAble = true;
+        if(this.imageURL == null){
+            this.imageURL = "";
+        }
         if (this.privateVariables == null) {
             this.privateVariables = { "cloneExists": undefined, "activeVariables": [], "locked": false, "cloneId": [] };
         }
@@ -147,7 +150,7 @@ export default class MemoryCard extends Shape {
                 for (var i = 0; i < lockedItems.length; i++) {
                     lockedIds.push(lockedItems[i].id);
                 }
-
+                console.log(socket);
                 socket.emit('updateState', list);
             }
         }
@@ -160,7 +163,6 @@ export default class MemoryCard extends Shape {
                 if (listToAddTo[object].object == this.object) {
                     if (listToAddTo[object].privateVariables.cloneExists == undefined) {
                         if (this.object != null) {
-                            //TODO: FIX!!
                             var clone = eval("new " + this.object + "(" + " listToAddTo.length,[],listToAddTo[object].moveAble," +
                                 "listToAddTo[object].targetAble,listToAddTo[object].color,listToAddTo[object].text,listToAddTo[object].textVisible,listToAddTo[object].privateVariables,listToAddTo[object].size,listToAddTo[object].imageURL" + ")");
                         }

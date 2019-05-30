@@ -282,35 +282,6 @@
     }
 
 
-}  class shapessquare extends abstractshape
- {    constructor(id, bounds, moveAble, targetAble, color, text, textVisible, size){
-        super(id, bounds, moveAble, targetAble, color, text, textVisible, size);
-    }
-
-    setDefaultForUninstantiatedParameters(canvas){
-        super.setDefaultForUninstantiatedParameters(canvas);
-        
-        this.constructProperBounds(100,100);
-    }
-
-    constructProperBounds(w,h){
-        var startX = this.bounds[0].x;
-        var startY = this.bounds[0].y;
-
-        if(this.bounds.length == 4){
-            this.bounds[0] = { x:startX, y:startY };
-            this.bounds[1] = { x:startX + w, y: startY };
-            this.bounds[2] = { x:startX + w, y: startY + h };
-            this.bounds[3] = { x: startX, y: startY + h};
-            return this.bounds;
-        } else {
-            console.log("shape is not a square removing it from canvas");
-            return this.bounds;
-        }
-    }
-
-    
-
 }  class memorymemoryCard extends abstractshape {
     constructor(id, bounds, moveAble, targetAble, color, text, textVisible, privateVariables, size, imageURL) {
         super(id, bounds, moveAble, targetAble, color, text, textVisible, size);
@@ -322,7 +293,7 @@
     setDefaultForUninstantiatedParameters(canvas) {
         super.setDefaultForUninstantiatedParameters(canvas);
         this.targetAble = true;
-        if (this.imageURL == null) {
+        if(this.imageURL == null){
             this.imageURL = "";
         }
         if (this.privateVariables == null) {
@@ -459,7 +430,7 @@
                 for (var i = 0; i < lockedItems.length; i++) {
                     lockedIds.push(lockedItems[i].id);
                 }
-
+                console.log(socket);
                 socket.emit('updateState', list);
             }
         }
@@ -472,7 +443,6 @@
                 if (listToAddTo[object].object == this.object) {
                     if (listToAddTo[object].privateVariables.cloneExists == undefined) {
                         if (this.object != null) {
-                            //TODO: FIX!!
                             var clone = eval("new " + this.object + "(" + " listToAddTo.length,[],listToAddTo[object].moveAble," +
                                 "listToAddTo[object].targetAble,listToAddTo[object].color,listToAddTo[object].text,listToAddTo[object].textVisible,listToAddTo[object].privateVariables,listToAddTo[object].size,listToAddTo[object].imageURL" + ")");
                         }
